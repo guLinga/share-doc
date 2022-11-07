@@ -1,10 +1,14 @@
-## npm i concurrently --save-dev  解决运行多个命令
+> 安装依赖
+```
+npm install
+```
+安装依赖的过程有点慢，请耐心等待。
+如果你遇到报错的情况，可能会出现`node install.js`的报错，这是因为安装`electron`时会下载一个包，如果网速慢长时间下载不下来救会报错。你可以切换npm镜像。
+```
+npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/"
+```
 
-## npm i wait-on --save-dev 解决一个命令执行完再执行下一个命令
-
-## npm i cross-env --save-dev 解决跨平台环境变量
-
-## npm i --save @fortawesome/fontawesome-svg-core
-## npm i --save @fortawesome/free-solid-svg-icons
-## npm i --save @fortawesome/react-fontawesome
-## npm i --save @fortawesome/free-brands-svg-icons
+> 运行项目
+```
+npm run dev
+```

@@ -15,6 +15,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
+// const Store = window.require('electron-store');
+// const fileStore = new Store({'name': 'FilesData'});
+
+const saveFilesToStore = (files:defaultFilesType) => {
+  //将信息存储到electron-store中
+  // fileStore.set('files', files);
+  localStorage.setItem('files',JSON.stringify(files));
+}
+
 interface editor{
   html: string
   text: string
@@ -22,7 +31,7 @@ interface editor{
 
 function App() {
   //左侧列表
-  const [files, setFiles] = useState(defaultFiles);
+  const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'null'));
 
   //被激活的文件id
   const [activeFileId, setActiveFileId] = useState('');
@@ -40,16 +49,25 @@ function App() {
   //创建文件的回调
   const clickCreateFile = () => {
     const newId = uuidv4();
-    const newFiles = [
-      ...files,
-      {
-        id: newId,
-        title: '',
-        body: '',
-        isNew: true
-      }
-    ]
+    const createFile = {
+      id: newId,
+      title: '',
+      body: '',
+      isNew: true
+    }
+    let newFiles:defaultFilesType = [];
+    if(files){
+      newFiles = [
+        ...files,
+        createFile
+      ]
+    }else{
+      newFiles = [
+        createFile
+      ]
+    }
     setFiles(newFiles);
+    // saveFilesToStore(newFiles);
   }
 
   //点击激活文件，并将文件id添加到打开文件的id列表
@@ -63,18 +81,18 @@ function App() {
   
   //打开的文件列表
   const openedFiles = openedFileIds.map(openId => {
-    return files.find(file => file.id === openId);
+    return files?.find(file => file.id === openId);
   })
 
   //当前打开的文件的内容
-  const activeFile = files.find(file => file.id === activeFileId);
+  const activeFile = files?.find(file => file.id === activeFileId);
   //如果是存在搜索，则显示搜索的内容
   const fileListArr = (searchedFiles.length > 0) ? searchedFiles : files;
 
   //编辑器回调
   function handleEditorChange({ text }:editor) {
     //更新输入框里面的内容
-    const newFiles = files.map(file => {
+    const newFiles = files?.map(file => {
       if(file.id === activeFileId){
         file.body = text;
       }
@@ -108,15 +126,20 @@ function App() {
 
   //删除文件
   const deleteFile = (id:string) => {
+    let news: boolean = false;
     const newFiles = files.filter(file => {
-      if(id === file.id){
+      if(id === file.id && !file.isNew){
+        news = true;
         fileHelper.deleteFile(file.title);
       }
       return file.id !== id
     });
     setFiles(newFiles);
-    //如果删除文件打开，则关闭
-    tabClose(id);
+    if(!news){
+      saveFilesToStore(newFiles);
+      //如果删除文件打开，则关闭
+      tabClose(id);
+    }
   }
 
   //修改文件名称
@@ -129,7 +152,7 @@ function App() {
           fileHelper.writeFile(`${value}`,(file.body || ''));
         }else{
           //修改文件名
-          fileHelper.renameFile(`${file.title}`, `${value}.md`);
+          fileHelper.renameFile(`${file.title}`, `${value}`);
         }
         file.title = value;
         //如果是新文件，讲isNew变成false`
@@ -137,12 +160,13 @@ function App() {
       }
       return file;
     })
+    saveFilesToStore(newFiles);
     setFiles(newFiles);
   }
 
   //搜索文件
   const filesSearch = (keyWord:string) => {
-    const newFiles = files.filter(file => file.title.includes(keyWord));
+    const newFiles = files?.filter(file => file.title.includes(keyWord));
     setSearchedFiles(newFiles);
   }
 
@@ -158,7 +182,7 @@ function App() {
     <div className="App container-fluid">
       <div className='row'>
         <div className='col-3 left-panel px-0 left-panel'>
-          <FileSearch title="搜索我的文档" onFileSearch={(value)=>{filesSearch(value)}} />
+          <FileSearch title="搜索我的文档" onFileSearch={(value)=>{filesSearch(value)}} closeSearchCallBack={()=>{setSearchedFiles([])}} />
           <FileList
             files={fileListArr}
             onFileClick={(id)=>{fileClick(id)}}

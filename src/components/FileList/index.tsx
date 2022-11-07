@@ -34,7 +34,7 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
   //修改的回车和退出
   const handleKeyUp = (event:React.KeyboardEvent<HTMLInputElement>) => {
     const {key} = event;
-    const editItem = files.find(file => file.id === editStatus);
+    const editItem = files?.find(file => file.id === editStatus);
       if(key === 'Enter' && editStatus!=='' && value.trim()!==''){
         onSaveEdit(editStatus, value, editItem?.isNew || false);
         setValue('');
@@ -45,7 +45,7 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
   }
 
   useEffect(() => {
-    const newFile = files.find(file => file.isNew);
+    const newFile = files?.find(file => file.isNew);
     if(newFile){
       setEditStatus(newFile.id);
       setValue(newFile.title);
@@ -55,7 +55,7 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
   return (
     <ul className="list-group list-group-flush">
       {
-        files.map(file => (
+        files?.map(file => (
           <li
             className="list-group-item bg-light d-flex align-items-center file-item mx-0 px-0"
             key={file.id}

@@ -5,9 +5,10 @@ import {faSearch, faTimes} from '@fortawesome/free-solid-svg-icons';
 interface props{
   title: string
   onFileSearch: (value:string)=>void
+  closeSearchCallBack: ()=>void
 }
 
-function FileSearch({ title, onFileSearch } : props) {
+function FileSearch({ title, onFileSearch, closeSearchCallBack } : props) {
   //是否搜索
   const [ inputActive, setInputActive ] = useState(false);
   //搜索的值
@@ -19,8 +20,8 @@ function FileSearch({ title, onFileSearch } : props) {
   const closeSearch = () => {
     setInputActive(false);
     setValue('');
-    //搜索空字符
-    onFileSearch('');
+    //关闭搜索
+    closeSearchCallBack();
   }
 
 

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './App.css';
 import {v4 as uuidv4} from 'uuid';
 import { faPlus, faFileImport } from '@fortawesome/free-solid-svg-icons';
@@ -6,7 +6,8 @@ import { fileHelper } from './utils/fileHelper';
 import FileSearch from './components/FileSearch';
 import FileList from './components/FileList';
 import BottomBtn from './components/BottomBtn';
-import defaultFiles, {defaultFiles as defaultFilesType} from './utils/defaultFiles';
+import {defaultFiles as defaultFilesType} from './utils/defaultFiles';
+import { useContextMenu } from './hooks/useContextMenu';
 import MarkdownIt from 'markdown-it';
 import TabList from './components/TabList';
 import MdEditor from 'react-markdown-editor-lite';
@@ -19,26 +20,27 @@ const remote = window.require('@electron/remote');
 
 const {basename, extname, parse} = window.require('path');
 
-const save = remote.app.getPath('documents')
+const save = remote.app.getPath('documents');
+
+const {Menu, MenuItem} = remote;
 
 // const Store = window.require('electron-store');
 // const fileStore = new Store({'name': 'FilesData'});
 
 const saveFilesToStore = (files:defaultFilesType) => {
-  //将信息存储到electron-store中
-  // fileStore.set('files', files);
-  const newFiles = files.reduce((result:{}, file) => {
+  //将信息中的body去除掉，添加到localStorage中
+  const newFiles = files.reduce((result:defaultFilesType, file) => {
     const {id, path, title } = file;
-    result = {
+    const temp = {
       id,
       path,
       title
     }
+    result.push(temp);
     return result;
   },[])
-  console.log(newFiles);
   
-  localStorage.setItem('files',JSON.stringify(files));
+  localStorage.setItem('files',JSON.stringify(newFiles));
 }
 
 interface editor{
@@ -62,6 +64,43 @@ function App() {
   //搜索的列表
   const [searchedFiles, setSearchedFiles] = useState<defaultFilesType>([]);
   
+  //
+  
+  // useEffect(() => {
+  //   const menu = new Menu();
+  //   menu.append(new MenuItem({
+  //     label: '打开',
+  //     click: () => {
+  //       console.log('打开');
+        
+  //     }
+  //   }));
+
+  //   menu.append(new MenuItem({
+  //     label: '重命名',
+  //     click: () => {
+  //       console.log('重命名');
+        
+  //     }
+  //   }));
+
+  //   menu.append(new MenuItem({
+  //     label: '删除',
+  //     click: () => {
+  //       console.log('删除');
+        
+  //     }
+  //   }));
+
+  //   const handleContextMenu = () => {
+  //     menu.popup({window: remote.getCurrentWindow()})
+  //   }
+
+  //   window.addEventListener('contextmenu', handleContextMenu);
+  //   return () => {
+  //     window.removeEventListener('contextmenu', handleContextMenu);
+  //   }
+  // })
 
   //新建文件的回调
   const clickCreateFile = () => {
@@ -96,6 +135,7 @@ function App() {
       if(file.id === fileId && !file.isLoaded){
           fileHelper.readFile(file.path).then((data:any) => {
             file.body = data;
+            file.isLoaded = true;
             setFiles(newFile);
         })
       }
@@ -155,16 +195,27 @@ function App() {
 
   //删除文件
   const deleteFile = (id:string) => {
+    console.log('id',id);
+
     let news: boolean = false;
+    
     const newFiles = files.filter(file => {
       if(id === file.id && !file.isNew){
         news = true;
-        fileHelper.deleteFile(file.title);
+        if(file.path)fileHelper.deleteFile(file.path);
+        console.log('删除文件');
       }
       return file.id !== id
     });
+
     setFiles(newFiles);
-    if(!news){
+
+    console.log('文件列表',newFiles);
+
+    console.log('news',news);
+    
+
+    if(news){
       saveFilesToStore(newFiles);
       //如果删除文件打开，则关闭
       tabClose(id);
@@ -173,6 +224,8 @@ function App() {
 
   //修改文件名称
   const updateFileName = (id:string, value:string, isNew: boolean) => {
+    console.log(files);
+    
     const newFiles = files.map(file => {
       if(file.id === id){
         //储存文件

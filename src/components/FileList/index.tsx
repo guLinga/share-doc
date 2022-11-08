@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDeleteLeft, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
+import { useContextMenu } from '../../hooks/useContextMenu';
+import { getParentNode } from '../../utils/helper';
 
 interface files {
   id: string
@@ -30,6 +32,36 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
     }
   }
   
+  //右键出现选择菜单
+  const clickedItem = useContextMenu([{
+    label: '打开',
+    click: () => {
+      const parentElement = getParentNode(clickedItem.current, 'file-item');
+      const {id} = parentElement?.dataset || {};
+      if(id){
+        onFileClick(id);
+      }
+    }
+  },{
+    label: '重命名',
+    click: () => {
+      const parentElement = getParentNode(clickedItem.current, 'file-item');
+      const {id, title} = parentElement?.dataset || {};
+      if(id && title){
+        setValue(title);
+        setEditStatus(id);
+      }
+    }
+  },{
+    label: '删除',
+    click: () => {
+      const parentElement = getParentNode(clickedItem.current, 'file-item');
+      const {id} = parentElement?.dataset || {};
+      if(id){
+        onFileDelete(id);
+      }
+    }
+  }], '.file-list', files)
 
   //修改的回车和退出
   const handleKeyUp = (event:React.KeyboardEvent<HTMLInputElement>) => {
@@ -53,12 +85,14 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
   }, [files])
 
   return (
-    <ul className="list-group list-group-flush">
+    <ul className="list-group list-group-flush file-list">
       {
         files?.map(file => (
           <li
             className="list-group-item bg-light d-flex align-items-center file-item mx-0 px-0"
             key={file.id}
+            data-id={file.id}
+            data-title={file.title}
           >
             {
               (file.id !== editStatus && !file.isNew) &&
@@ -70,7 +104,7 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
                   className='col-6 c-link'
                   onClick={() => { onFileClick(file.id) }}
                 >{file.title}</span>
-                <button type='button' className='icon-button col-2' onClick={() => {
+                {/* <button type='button' className='icon-button col-2' onClick={() => {
                   setValue(file.title);
                   setEditStatus(file.id);
                 }}>
@@ -78,7 +112,7 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
                 </button>
                 <button type='button' className='icon-button col-2' onClick={() => { onFileDelete(file.id) }}>
                   <FontAwesomeIcon title='删除' icon={faDeleteLeft} />
-                </button>
+                </button> */}
               </>
             }
             {

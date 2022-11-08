@@ -15,12 +15,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
+const remote = window.require('@electron/remote');
+
+const {basename, extname, parse} = window.require('path');
+
+const save = remote.app.getPath('documents')
+
 // const Store = window.require('electron-store');
 // const fileStore = new Store({'name': 'FilesData'});
 
 const saveFilesToStore = (files:defaultFilesType) => {
   //将信息存储到electron-store中
   // fileStore.set('files', files);
+  const newFiles = files.reduce((result:{}, file) => {
+    const {id, path, title } = file;
+    result = {
+      id,
+      path,
+      title
+    }
+    return result;
+  },[])
+  console.log(newFiles);
+  
   localStorage.setItem('files',JSON.stringify(files));
 }
 
@@ -46,7 +63,7 @@ function App() {
   const [searchedFiles, setSearchedFiles] = useState<defaultFilesType>([]);
   
 
-  //创建文件的回调
+  //新建文件的回调
   const clickCreateFile = () => {
     const newId = uuidv4();
     const createFile = {
@@ -67,13 +84,25 @@ function App() {
       ]
     }
     setFiles(newFiles);
-    // saveFilesToStore(newFiles);
   }
 
   //点击激活文件，并将文件id添加到打开文件的id列表
-  const fileClick = (fileId:string) => {
+  const fileClick = async (fileId:string) => {
     //激活文件
     setActiveFileId(fileId);
+    //读取文件
+    const newFile = files.map(file => {
+
+      if(file.id === fileId && !file.isLoaded){
+          fileHelper.readFile(file.path).then((data:any) => {
+            file.body = data;
+            setFiles(newFile);
+        })
+      }
+      
+      return file;
+    })
+    
     //将文件添加到打开文件的列表id
     if(!openedFileIds.includes(fileId))
     setOpenedFileIds([...openedFileIds,fileId]);
@@ -148,11 +177,14 @@ function App() {
       if(file.id === id){
         //储存文件
         if(isNew){
-          //新建文件
-          fileHelper.writeFile(`${value}`,(file.body || ''));
+          //给对象添加path
+          file.path = `${save}\\${value}.md`
+          //在电脑的文档下新建文件
+          fileHelper.writeFile(file.path,(''));
         }else{
           //修改文件名
-          fileHelper.renameFile(`${file.title}`, `${value}`);
+          fileHelper.renameFile(file.path || `${save}\\${file.title}.md`, `${parse(file.path).dir}\\${value}.md` || `${save}\\${value}.md`);
+          file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\${value}.md`
         }
         file.title = value;
         //如果是新文件，讲isNew变成false`
@@ -172,9 +204,76 @@ function App() {
 
   //保存文件
   const clickSaveFile = () => {
-    fileHelper.writeFile(`${activeFile?.title}`, activeFile?.body || '').then(() => {
+    //`${activeFile?.title}`, activeFile?.body || ''
+    fileHelper.writeFile(activeFile?.path, activeFile?.body || '').then(() => {
       //删除未保存的Id
       setUnsavedFileIds(unsavedFileIds.filter(id => id !== activeFile?.id));
+    })
+  }
+
+  //导入文件
+  const importFiles = () => {
+    remote.dialog.showOpenDialog({
+      title: '请选择导入的markdown文件',
+      properties: ['openFile', 'multiSelections'],
+      filters: [
+        {name: 'Markdown files', extensions: ['md']}
+      ]
+    }).then((result:any) => {
+      // console.log('result',result, result.canceled, result.filePaths);
+      const {canceled, filePaths}:{canceled:boolean,filePaths:string[]} = result;
+      if(!canceled){
+
+        const msg = {
+          is: false,
+          len: 0
+        }
+
+        //获取导入的文件
+        const fileteredPaths = filePaths.filter(path => {
+
+          //去除掉已经存在的文件
+          let alreadyAdded = null;
+          if(files!==undefined && files!==null && files.length!==0){
+            alreadyAdded = Object.values(files).find(file => {
+
+              // 记录有多少个文件已经存在，不必重新导入
+              if(file.path === path){
+                msg.is = true;
+                msg.len++;
+              }
+  
+              return file.path === path;
+            })
+          }
+          return !alreadyAdded;
+        })
+        console.log(fileteredPaths);
+        
+        //将数组转换成对象
+        const importFilesArr = fileteredPaths.map(path => {
+          return {
+            id: uuidv4(),
+            title: basename(path, extname(path)),
+            path
+          }
+        })
+
+        //更新文件列表
+        const isFiles = files ?? [];
+        const newFiles = [...isFiles, ...importFilesArr];
+        setFiles(newFiles);
+        saveFilesToStore(newFiles);
+
+        //提示
+        remote.dialog.showMessageBox({
+          type: 'info',
+          title: `导入文件`,
+          message: `共导入了${filePaths.length}个文件，成功导入了${filePaths.length - msg.len}个文件，有${msg.len}个文件已经存在。`,
+        })
+      }
+    }).catch((err:any) => {
+      console.log('err',err);
     })
   }
 
@@ -194,7 +293,7 @@ function App() {
               <BottomBtn text="新建" colorClass="btn-primary no-border-redius" icon={faPlus} callback={clickCreateFile}/>
             </div>
             <div className="col">
-              <BottomBtn text="导入" colorClass="btn-success no-border-redius" icon={faFileImport} callback={()=>{}}/>
+              <BottomBtn text="导入" colorClass="btn-success no-border-redius" icon={faFileImport} callback={importFiles}/>
             </div>
           </div>
         </div>

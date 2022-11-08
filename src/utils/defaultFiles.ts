@@ -6,6 +6,8 @@ export type defaultFiles = {
   title: string
   body?: string
   isNew?: boolean
+  path?: string
+  isLoaded?: boolean
 }[]
 const defaultFiles:defaultFiles = fileStore
 

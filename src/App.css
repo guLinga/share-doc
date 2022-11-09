@@ -17,14 +17,6 @@
   height: calc(100vh - 40px);
 }
 
-.start-page{
-  height: 100vh;
-  font-size: 30px;
-  text-align: center;
-  line-height: 100vh;
-  color: #ccc;
-}
-
 .left-panel{
   height: 100vh;
   position: relative;

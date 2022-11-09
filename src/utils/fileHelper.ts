@@ -6,7 +6,6 @@ export const fileHelper = {
   readFile: (path:string | undefined) => {
     return fs.readFile(paths.join(path), {encoding: 'utf8'})
   },
-
   //写入
   writeFile: (path:string | undefined, content:string) => {
     return fs.writeFile(paths.join(path), content, {econding: 'utf8'})

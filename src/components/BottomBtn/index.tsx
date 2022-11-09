@@ -7,15 +7,17 @@ interface props{
   colorClass: string
   icon: IconProp
   callback:()=>void
+  title?: string
 }
 
-function BottomBtn({text,colorClass,icon,callback}:props) {
+function BottomBtn({text,colorClass,icon,callback,title}:props) {
   return (
     <button
       type='button'
       className={`btn btn-block no-border ${colorClass}`}
       style={{width: '100%'}}
       onClick={callback}
+      title={title}
     >
       <FontAwesomeIcon
         className='mr-2'

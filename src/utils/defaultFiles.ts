@@ -12,3 +12,34 @@ export type defaultFiles = {
 const defaultFiles:defaultFiles = fileStore
 
 export default defaultFiles;
+
+/*
+[
+  {
+    id:string
+    title: string
+    body?: string
+    isNew?: boolean
+    path?: do
+    isLoaded?: boolean
+  },
+  {
+    id:string
+    title: string
+    body?: string
+    isNew?: boolean
+    path?: ot
+    isLoaded?: boolean
+  },
+  {
+    id:string
+    title: string
+    body?: string
+    isNew?: boolean
+    path?: do
+    isLoaded?: boolean
+  }
+]
+*/
+
+// [3,4,5,6]

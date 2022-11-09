@@ -1,18 +1,20 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import './App.css';
 import {v4 as uuidv4} from 'uuid';
-import { faPlus, faFileImport } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileImport, faBandage } from '@fortawesome/free-solid-svg-icons';
 import { fileHelper } from './utils/fileHelper';
 import FileSearch from './components/FileSearch';
 import FileList from './components/FileList';
 import BottomBtn from './components/BottomBtn';
 import {defaultFiles as defaultFilesType} from './utils/defaultFiles';
-import { useContextMenu } from './hooks/useContextMenu';
+import { Resizable } from 're-resizable';
+// import { useContextMenu } from './hooks/useContextMenu';
 import MarkdownIt from 'markdown-it';
 import TabList from './components/TabList';
-import MdEditor from 'react-markdown-editor-lite';
-import 'react-markdown-editor-lite/lib/index.css';
+import MdEditor from 'react-markdown-editor-lite-plus';
+import 'react-markdown-editor-lite-plus/lib/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './app.scss';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -21,8 +23,6 @@ const remote = window.require('@electron/remote');
 const {basename, extname, parse} = window.require('path');
 
 const save = remote.app.getPath('documents');
-
-const {Menu, MenuItem} = remote;
 
 // const Store = window.require('electron-store');
 // const fileStore = new Store({'name': 'FilesData'});
@@ -63,44 +63,10 @@ function App() {
 
   //搜索的列表
   const [searchedFiles, setSearchedFiles] = useState<defaultFilesType>([]);
-  
-  //
-  
-  // useEffect(() => {
-  //   const menu = new Menu();
-  //   menu.append(new MenuItem({
-  //     label: '打开',
-  //     click: () => {
-  //       console.log('打开');
-        
-  //     }
-  //   }));
 
-  //   menu.append(new MenuItem({
-  //     label: '重命名',
-  //     click: () => {
-  //       console.log('重命名');
-        
-  //     }
-  //   }));
-
-  //   menu.append(new MenuItem({
-  //     label: '删除',
-  //     click: () => {
-  //       console.log('删除');
-        
-  //     }
-  //   }));
-
-  //   const handleContextMenu = () => {
-  //     menu.popup({window: remote.getCurrentWindow()})
-  //   }
-
-  //   window.addEventListener('contextmenu', handleContextMenu);
-  //   return () => {
-  //     window.removeEventListener('contextmenu', handleContextMenu);
-  //   }
-  // })
+  //键盘事件
+  // const [Control, setControl] = useState(false);
+  // const [s, setS] = useState(false);
 
   //新建文件的回调
   const clickCreateFile = () => {
@@ -240,7 +206,7 @@ function App() {
           file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\${value}.md`
         }
         file.title = value;
-        //如果是新文件，讲isNew变成false`
+        //如果是新文件，讲isNew变成false
         file.isNew = false;
       }
       return file;
@@ -257,11 +223,12 @@ function App() {
 
   //保存文件
   const clickSaveFile = () => {
-    //`${activeFile?.title}`, activeFile?.body || ''
-    fileHelper.writeFile(activeFile?.path, activeFile?.body || '').then(() => {
-      //删除未保存的Id
-      setUnsavedFileIds(unsavedFileIds.filter(id => id !== activeFile?.id));
-    })
+    if(activeFileId){
+      fileHelper.writeFile(activeFile?.path, activeFile?.body || '').then(() => {
+        //删除未保存的Id
+        setUnsavedFileIds(unsavedFileIds.filter(id => id !== activeFile?.id));
+      })
+    }
   }
 
   //导入文件
@@ -330,27 +297,59 @@ function App() {
     })
   }
 
+  //ctrl + s 保存文件
+  // useEffect(() => {
+  //   const handleInputEvent = (event:KeyboardEvent) => {
+  //     const {code, key} = event;
+  //     if(key==='Control')setControl(true);
+  //     if(key==='s')setS(true);
+  //     console.log(code, key, Control, s);
+  //     if(Control&&s){
+  //       setControl(false);
+  //       setS(false);
+  //       console.log('保存');
+  //     }
+  //   }
+  //   document.addEventListener('keyup',handleInputEvent);
+  //   return () => {
+  //     document.removeEventListener('keyup', handleInputEvent);
+  //   }
+  // }, [Control, s])
+
   return (
     <div className="App container-fluid">
-      <div className='row'>
-        <div className='col-3 left-panel px-0 left-panel'>
-          <FileSearch title="搜索我的文档" onFileSearch={(value)=>{filesSearch(value)}} closeSearchCallBack={()=>{setSearchedFiles([])}} />
-          <FileList
-            files={fileListArr}
-            onFileClick={(id)=>{fileClick(id)}}
-            onSaveEdit={(id, value, isNew)=>{updateFileName(id,value, isNew)}}
-            onFileDelete={(id)=>{deleteFile(id)}}
-          />
-          <div className='row g-0 button-group'>
-            <div className="col">
-              <BottomBtn text="新建" colorClass="btn-primary no-border-redius" icon={faPlus} callback={clickCreateFile}/>
-            </div>
-            <div className="col">
-              <BottomBtn text="导入" colorClass="btn-success no-border-redius" icon={faFileImport} callback={importFiles}/>
+      <div className='row view-flex'>
+        <Resizable
+          defaultSize={{
+            width: 320,
+            height: '',
+          }}
+          style={{height: '100vh', overflow: 'hidden'}}
+          minWidth="260"
+          maxWidth="60%"
+        >
+          <div className='view-left-panel px-0 left-panel'>
+            <FileSearch title="搜索我的文档" onFileSearch={(value)=>{filesSearch(value)}} closeSearchCallBack={()=>{setSearchedFiles([])}} />
+            <FileList
+              files={fileListArr}
+              onFileClick={(id)=>{fileClick(id)}}
+              onSaveEdit={(id, value, isNew)=>{updateFileName(id,value, isNew)}}
+              onFileDelete={(id)=>{deleteFile(id)}}
+            />
+            <div className='row g-0 button-group'>
+              <div className="col">
+                <BottomBtn text="" title="新建" colorClass="btn-primary no-border-redius" icon={faPlus} callback={clickCreateFile}/>
+              </div>
+              <div className="col">
+                <BottomBtn text="" title="导入" colorClass="btn-success no-border-redius" icon={faFileImport} callback={importFiles}/>
+              </div>
+              <div className="col">
+                  <BottomBtn text="" title='保存文件' colorClass="btn-warning no-border-redius" icon={faBandage} callback={clickSaveFile}/>
+                </div>
             </div>
           </div>
-        </div>
-        <div className='col-9 right-panel px-0'>
+        </Resizable>
+        <div className='view-right-panel px-0 right-vessels'>
           {
             !activeFile &&
             <div className='start-page'>
@@ -377,10 +376,8 @@ function App() {
                 className="editor"
                 renderHTML={text => mdParser.render(text)}
                 onChange={(e)=>{handleEditorChange(e)}}
+                view={{ menu: true, md: true, html: false }}
               />
-              <div className="col">
-                <BottomBtn text="保存" colorClass="btn-primary no-border-redius" icon={faPlus} callback={clickSaveFile}/>
-              </div>
             </>
           }
         </div>

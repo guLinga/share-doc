@@ -16,7 +16,9 @@ app.on('ready', () => {
     }
   })
   require('@electron/remote/main').enable(mainWindow.webContents)
-  mainWindow.webContents.openDevTools();
+  if(isDev){
+    mainWindow.webContents.openDevTools();
+  }
   const urlLocation = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname,'./build/index.html')}`;
   mainWindow.loadURL(urlLocation);
 })

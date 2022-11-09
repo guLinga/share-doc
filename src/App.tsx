@@ -6,9 +6,9 @@ import { fileHelper } from './utils/fileHelper';
 import FileSearch from './components/FileSearch';
 import FileList from './components/FileList';
 import BottomBtn from './components/BottomBtn';
+import LeftSelector from './components/LeftSelector';
 import {defaultFiles as defaultFilesType} from './utils/defaultFiles';
 import { Resizable } from 're-resizable';
-// import { useContextMenu } from './hooks/useContextMenu';
 import MarkdownIt from 'markdown-it';
 import TabList from './components/TabList';
 import MdEditor from 'react-markdown-editor-lite-plus';
@@ -24,6 +24,7 @@ const {basename, extname, parse} = window.require('path');
 
 const save = remote.app.getPath('documents');
 
+// electron-store储存
 // const Store = window.require('electron-store');
 // const fileStore = new Store({'name': 'FilesData'});
 
@@ -63,6 +64,9 @@ function App() {
 
   //搜索的列表
   const [searchedFiles, setSearchedFiles] = useState<defaultFilesType>([]);
+
+  //左侧列表是否打开
+  const [leftListOpen, setLeftListOpen] = useState(true);
 
   //键盘事件
   // const [Control, setControl] = useState(false);
@@ -316,19 +320,26 @@ function App() {
   //   }
   // }, [Control, s])
 
+
   return (
     <div className="App container-fluid">
       <div className='row view-flex'>
+        <LeftSelector setLeftListOpen={()=>{
+          setLeftListOpen(!leftListOpen)
+        }} />
         <Resizable
           defaultSize={{
             width: 320,
             height: '',
           }}
-          style={{height: '100vh', overflow: 'hidden'}}
+          style={{height: '100vh', overflow: 'hidden', backgroundColor: 'white'}}
           minWidth="260"
+          maxHeight="100%"
           maxWidth="60%"
+          minHeight="100%"
+          className={!leftListOpen?'openListClassName':''}
         >
-          <div className='view-left-panel px-0 left-panel'>
+          <div className='view-middle-panel px-0'>
             <FileSearch title="搜索我的文档" onFileSearch={(value)=>{filesSearch(value)}} closeSearchCallBack={()=>{setSearchedFiles([])}} />
             <FileList
               files={fileListArr}

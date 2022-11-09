@@ -98,7 +98,8 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
               (file.id !== editStatus && !file.isNew) &&
               <>
                 <span className='col-2'>
-                  <FontAwesomeIcon icon={faMarkdown} size="lg" />
+                  {/* <FontAwesomeIcon icon={faMarkdown} size="lg" /> */}
+                  <i className='iconfont icon-markdown'></i>
                 </span>
                 <span
                   className='col-6 c-link'

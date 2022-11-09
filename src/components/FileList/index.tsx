@@ -4,6 +4,7 @@ import { faDeleteLeft, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons
 import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
 import { useContextMenu } from '../../hooks/useContextMenu';
 import { getParentNode } from '../../utils/helper';
+import IconFont from '../Icon/index';
 
 interface files {
   id: string
@@ -98,22 +99,12 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
               (file.id !== editStatus && !file.isNew) &&
               <>
                 <span className='col-2'>
-                  {/* <FontAwesomeIcon icon={faMarkdown} size="lg" /> */}
-                  <i className='iconfont icon-markdown'></i>
+                  <IconFont type='icon-markdown' />
                 </span>
                 <span
                   className='col-6 c-link'
                   onClick={() => { onFileClick(file.id) }}
                 >{file.title}</span>
-                {/* <button type='button' className='icon-button col-2' onClick={() => {
-                  setValue(file.title);
-                  setEditStatus(file.id);
-                }}>
-                  <FontAwesomeIcon title='编辑' icon={faEdit} />
-                </button>
-                <button type='button' className='icon-button col-2' onClick={() => { onFileDelete(file.id) }}>
-                  <FontAwesomeIcon title='删除' icon={faDeleteLeft} />
-                </button> */}
               </>
             }
             {

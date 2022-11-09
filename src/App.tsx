@@ -332,7 +332,7 @@ function App() {
             width: 320,
             height: '',
           }}
-          style={{height: '100vh', overflow: 'hidden', backgroundColor: 'white'}}
+          style={{height: '100vh', overflow: 'hidden', backgroundColor: 'white', padding: "0"}}
           minWidth="260"
           maxHeight="100%"
           maxWidth="60%"

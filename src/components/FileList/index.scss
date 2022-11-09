@@ -1,0 +1,22 @@
+#fileList{
+  background-color: white;
+  list-style: none;
+  padding: 0 !important;
+  .fileListItem{
+    cursor: pointer;
+    vertical-align: top;
+    padding: 0px 10px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    .fileListItemIcon{
+      font-size: 18px;
+      line-height: 18px;
+      margin-right: 10px;
+      color: red;
+    }
+    &:hover{
+      background-color: #bcd8f6;
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
 import { useContextMenu } from '../../hooks/useContextMenu';
 import { getParentNode } from '../../utils/helper';
 import IconFont from '../Icon/index';
+import './index.scss';
 
 interface files {
   id: string
@@ -86,24 +87,24 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete }: props) {
   }, [files])
 
   return (
-    <ul className="list-group list-group-flush file-list">
+    <ul id='fileList' className='file-list'>
       {
         files?.map(file => (
           <li
-            className="list-group-item bg-light d-flex align-items-center file-item mx-0 px-0"
+            className="fileListItem file-item"
             key={file.id}
             data-id={file.id}
             data-title={file.title}
+            onClick={() => { onFileClick(file.id) }}
           >
             {
               (file.id !== editStatus && !file.isNew) &&
               <>
-                <span className='col-2'>
+                <span className='fileListItemIcon'>
                   <IconFont type='icon-markdown' />
                 </span>
                 <span
-                  className='col-6 c-link'
-                  onClick={() => { onFileClick(file.id) }}
+                  className=''
                 >{file.title}</span>
               </>
             }

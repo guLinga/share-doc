@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fileHelper } from './utils/fileHelper';
-import { resultDirectory } from './utils/result';
+import { useResultDirectory } from './hooks/useResultDirectory';
 import {v4 as uuidv4} from 'uuid';
 import { Resizable } from 're-resizable';
 import MarkdownIt from 'markdown-it';
@@ -16,6 +16,7 @@ import 'react-markdown-editor-lite-plus/lib/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './app.scss';
+import { useWatchDirectroy } from './hooks/useWatchDirectroy';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -23,11 +24,8 @@ const remote = window.require('@electron/remote');
 
 const {basename, extname, parse} = window.require('path');
 
+//documents地址
 const save = remote.app.getPath('documents');
-
-// electron-store储存
-// const Store = window.require('electron-store');
-// const fileStore = new Store({'name': 'FilesData'});
 
 const saveFilesToStore = (files:defaultFilesType) => {
   //将信息中的body去除掉，添加到localStorage中
@@ -52,16 +50,13 @@ interface editor{
 
 function App() {
 
-  useEffect(()=>{
-    resultDirectory()
-  },[])
-
+  
   //左侧列表
   const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'null'));
-
+  
   //被激活的文件id
   const [activeFileId, setActiveFileId] = useState('');
-
+  
   //打开的文件id列表
   const [openedFileIds, setOpenedFileIds] = useState<string[]>([]);
 
@@ -76,6 +71,16 @@ function App() {
 
   //新建文件的id，或修改文件的id
   const [isNewFile, setIsNewFile] = useState('');
+
+  //监听文件
+  useWatchDirectroy((tag,msg)=>{
+    console.log(tag,msg);
+  });
+
+  //获取目录列表
+  useResultDirectory((result)=>{
+    setFiles(result);
+  })
 
   //新建文件的回调
   const clickCreateFile = () => {
@@ -199,7 +204,7 @@ function App() {
         fileHelper.renameFile(file.path || `${save}\\yun\\${file.title}.md`, `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`);
         file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`
       }
-      file.title = value + '.md';
+      file.title = value;
       //如果是新文件，讲isNew变成false
       file.isNew = false;
     }

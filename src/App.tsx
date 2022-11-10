@@ -1,19 +1,20 @@
-import {useState} from 'react';
-import './App.css';
-import {v4 as uuidv4} from 'uuid';
-import { faPlus, faFileImport, faBandage } from '@fortawesome/free-solid-svg-icons';
+import { useState, useEffect } from 'react';
 import { fileHelper } from './utils/fileHelper';
-import FileSearch from './components/FileSearch';
-import FileList from './components/FileList';
-import BottomBtn from './components/BottomBtn';
-import LeftSelector from './components/LeftSelector';
-import defaultFiles,{defaultFiles as defaultFilesType} from './utils/defaultFiles';
+import { resultDirectory } from './utils/result';
+import {v4 as uuidv4} from 'uuid';
 import { Resizable } from 're-resizable';
 import MarkdownIt from 'markdown-it';
-import TabList from './components/TabList';
 import MdEditor from 'react-markdown-editor-lite-plus';
+import FileSearch from './components/FileSearch';
+import FileList from './components/FileList';
+import LeftSelector from './components/LeftSelector';
+import BottomBtn from './components/BottomBtn';
+import TabList from './components/TabList';
+import {defaultFiles as defaultFilesType} from './utils/defaultFiles';
+import { faPlus, faFileImport, faBandage } from '@fortawesome/free-solid-svg-icons';
 import 'react-markdown-editor-lite-plus/lib/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 import './app.scss';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -50,6 +51,11 @@ interface editor{
 }
 
 function App() {
+
+  useEffect(()=>{
+    resultDirectory()
+  },[])
+
   //左侧列表
   const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'null'));
 
@@ -193,7 +199,7 @@ function App() {
         fileHelper.renameFile(file.path || `${save}\\yun\\${file.title}.md`, `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`);
         file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`
       }
-      file.title = value;
+      file.title = value + '.md';
       //如果是新文件，讲isNew变成false
       file.isNew = false;
     }

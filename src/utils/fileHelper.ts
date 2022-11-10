@@ -1,8 +1,10 @@
 const fs = window.require('fs').promises;
 const paths = window.require('path');
+const remote = window.require('@electron/remote');
+const save = remote.app.getPath('documents');
 
 export const fileHelper = {
-  //读取
+  //读取文件
   readFile: (path:string | undefined) => {
     return fs.readFile(paths.join(path), {encoding: 'utf8'})
   },
@@ -19,6 +21,11 @@ export const fileHelper = {
   //删除
   deleteFile: (path: string) => {
     return fs.unlink(paths.join(path));
+  },
+
+  //读取文件夹
+  readFiles: () => {
+    return fs.readdir(paths.join(save, 'yun'));
   }
 }
 

@@ -10,10 +10,11 @@ interface map{
  * 
  */
 export const flattenArr = (arr:defaultFiles):Object => {
-  return arr.reduce((map:map,item) => {
-    map[item.id] = item;
-    return map;
-  }, {})
+  // return arr.reduce((map:map,item) => {
+  //   map[item.id] = item;
+  //   return map;
+  // }, {})
+  return {}
 }
 
 /**

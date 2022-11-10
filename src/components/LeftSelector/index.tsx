@@ -1,5 +1,6 @@
 import React from 'react'
 import './index.scss';
+import IconFont from '../Icon/index';
 
 interface props{
   setLeftListOpen: ()=>void
@@ -8,7 +9,9 @@ interface props{
 function LeftSelector({setLeftListOpen}:props) {
   return (
     <div className='leftSelector'>
-      <button onClick={setLeftListOpen} title="文件管理器">点击</button>
+      <div className='fileManagement'>
+        <IconFont type='icon-wenjianjia' onClick={setLeftListOpen} title="文件管理器"/>
+      </div>
     </div>
   )
 }

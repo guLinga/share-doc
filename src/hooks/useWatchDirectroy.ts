@@ -44,7 +44,7 @@ export const useWatchDirectroy = (callback:(tag:string,msg:{
 
     //卸载monitor，不然会产生好多个monitor
     return () => {
-      temp.stop()
+      if(temp)temp.stop()
     }
 
     //这里监听files和fileListName，不然，无法获取到最新的值

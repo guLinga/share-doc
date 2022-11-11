@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useExists } from './hooks/useExists';
 import { useWatchDirectroy } from './hooks/useWatchDirectroy';
 import { dir, useResultDirectory } from './hooks/useResultDirectory';
 import { fileHelper } from './utils/fileHelper';
@@ -54,6 +55,9 @@ export interface fileListNameType{
 }
 
 function App() {
+
+  //查询是否有该目录，没有则创建
+  useExists();
 
   //左侧列表
   const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'{}'));

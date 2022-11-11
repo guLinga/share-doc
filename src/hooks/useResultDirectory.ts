@@ -1,13 +1,14 @@
 import { fileHelper } from "../utils/fileHelper"
+import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {defaultFiles as defaultFilesType} from '../utils/defaultFiles';
-import { useEffect } from 'react';
+const {extname} = window.require('path');
 const fs = window.require('fs');
 const path = window.require('path');
 const remote = window.require('@electron/remote');
 const save = remote.app.getPath('documents');
 export const dir = path.join(save, 'yun'); 
-
+//读取文档中的yun文件，目前只读取第一层
 export const useResultDirectory = async (callback:(result:defaultFilesType)=>void) => {
    useEffect(()=>{
     (async function fn(){
@@ -25,6 +26,8 @@ export const useResultDirectory = async (callback:(result:defaultFilesType)=>voi
                fs.statSync(dir + "\\" + b).mtime.getTime();
       });
       let result = directory.reduce((result:defaultFilesType,item)=>{
+        //只读取md文件，判断是否是md文件
+        if(extname(item)!=='.md')return result;
         const id = uuidv4();
         result[id] = {
           id,
@@ -33,7 +36,6 @@ export const useResultDirectory = async (callback:(result:defaultFilesType)=>voi
         }
         return result;
       },{})
-      localStorage.setItem('files', JSON.stringify(result));
       callback(result);
     })()
   },[])

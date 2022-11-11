@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useWatchDirectroy } from './hooks/useWatchDirectroy';
+import { dir, useResultDirectory } from './hooks/useResultDirectory';
 import { fileHelper } from './utils/fileHelper';
-import { useResultDirectory } from './hooks/useResultDirectory';
 import {v4 as uuidv4} from 'uuid';
 import { Resizable } from 're-resizable';
 import MarkdownIt from 'markdown-it';
@@ -16,7 +17,6 @@ import 'react-markdown-editor-lite-plus/lib/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './app.scss';
-import { useWatchDirectroy } from './hooks/useWatchDirectroy';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -27,7 +27,8 @@ const {basename, extname, parse} = window.require('path');
 //documents地址
 const save = remote.app.getPath('documents');
 
-const saveFilesToStore = (files:defaultFilesType) => {
+//将信息去掉body后储存到localStorage中，将文件名也储存到localStorage中
+const saveFilesToStore = (files:defaultFilesType, filesName: fileListNameType) => {
   //将信息中的body去除掉，添加到localStorage中
   const newFiles = Object.keys(files).reduce((result:defaultFilesType, file) => {
     const {id, path, title } = files[file];
@@ -39,8 +40,8 @@ const saveFilesToStore = (files:defaultFilesType) => {
     result[file] = temp;
     return result;
   },{})
-  
   localStorage.setItem('files',JSON.stringify(newFiles));
+  localStorage.setItem('filesName', JSON.stringify(filesName));
 }
 
 interface editor{
@@ -48,12 +49,18 @@ interface editor{
   text: string
 }
 
+export interface fileListNameType{
+  [key:string]: boolean
+}
+
 function App() {
 
-  
   //左侧列表
-  const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'null'));
+  const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'{}'));
   
+  //左侧列表文件名称的储存
+  const [fileListName, setFileListName] = useState<fileListNameType>(JSON.parse(localStorage.getItem('filesName')||"{}"));
+
   //被激活的文件id
   const [activeFileId, setActiveFileId] = useState('');
   
@@ -74,12 +81,62 @@ function App() {
 
   //监听文件
   useWatchDirectroy((tag,msg)=>{
-    console.log(tag,msg);
-  });
+    const {curr} = msg;
+    switch(tag){
+      case '新增':
+        //如果存在说明是通过软件新增的，不需要新增
+        if(fileListName[curr])return;
+        const id = uuidv4();
+        const temp = {
+          id,
+          title: curr,
+          path: dir + "\\" + curr + '.md'
+        }
+        //修改文件列表
+        files[id] = temp;
+        setFiles({...files});
+        //修改文件名列表
+        fileListName[curr] = true;
+        setFileListName({...fileListName});
+        //储存
+        saveFilesToStore(files, fileListName);
+        break;
+      case '删除':
+        //如果已经消失了说明是通过软件删除的，不用再次删除
+        if(!fileListName[curr])return;
+        
+        //删除文件名列表
+        delete fileListName[curr];
+        setFileListName({...fileListName});
+        //删除文件
+        const newFile = Object.keys(files).reduce((result:defaultFilesType,item)=>{
+          if(files[item].title!==curr){
+            result[item] = files[item];
+          }
+          return result;
+        },{})
+        setFiles({...newFile});
+        //储存本地
+        saveFilesToStore(newFile, fileListName);
+        break;
+      default:
+        return;
+    }
+  },files,fileListName);
 
   //获取目录列表
   useResultDirectory((result)=>{
+    //赋值文件列表
     setFiles(result);
+    localStorage.setItem('files', JSON.stringify(result));
+    //赋值文件名称列表
+    const filesName = Object.keys(result).reduce((resultItem:fileListNameType,item)=>{
+      const title = result[item].title;
+      resultItem[title] = true;
+      return resultItem;
+    },{})
+    localStorage.setItem('filesName', JSON.stringify(filesName));
+    setFileListName(filesName);
   })
 
   //新建文件的回调
@@ -140,6 +197,7 @@ function App() {
 
   //当前打开的文件的内容
   const activeFile = files ? files[activeFileId] : undefined;
+
   //如果是存在搜索，则显示搜索的内容
   const fileListArr = (Object.keys(searchedFiles).length > 0) ? searchedFiles : files;
 
@@ -179,17 +237,21 @@ function App() {
     if(files[id]&&!files[id].isNew){
       news = true;
       if(files[id].path!==undefined)fileHelper.deleteFile(files[id].path||'');
+      //删除文件名列表
+      delete fileListName[files[id].title];
+      setFileListName({...fileListName});
+      //删除文件列表
       delete files[id];
       setFiles({...files});
     }
     if(news){
-      saveFilesToStore({...files});
+      saveFilesToStore({...files}, fileListName);
       //如果删除文件打开，则关闭
       tabClose(id);
     }
   }
 
-  //修改文件名称
+  //修改文件名称，和新增文件
   const updateFileName = (id:string, value:string, isNew: boolean) => {
     if(files[id]){
       //储存文件
@@ -199,29 +261,39 @@ function App() {
         file.path = `${save}\\yun\\${value}.md`
         //在电脑的文档下新建文件
         fileHelper.writeFile(file.path,(''));
+        //更新文件名列表
+        fileListName[value] = true;
+        setFileListName({...fileListName});
+        setIsNewFile('');
       }else{
         //修改文件名
         fileHelper.renameFile(file.path || `${save}\\yun\\${file.title}.md`, `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`);
         file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`
+        //修改文件名列表
+        delete fileListName[file.title];
+        fileListName[value] = true;
+        setFileListName({...fileListName});
       }
       file.title = value;
-      //如果是新文件，讲isNew变成false
+      //如果是新文件，将isNew变成false
       file.isNew = false;
     }
-    saveFilesToStore({...files});
+    //保存文件到localStorage
+    saveFilesToStore({...files}, fileListName);
+    //更新文件列表
     setFiles({...files});
   }
 
   //搜索文件，展示删除搜索文件
   const filesSearch = (keyWord:string) => {
-    let result:defaultFilesType = {};
-    // const newFiles = files?.filter(file => file.title.includes(keyWord));
-    Object.keys(files).map(id=>{
-      if(files[id].title.includes(keyWord)){
-        result[id] = files[id];
-      }
-    })
-    setSearchedFiles(result);
+    // let result:defaultFilesType = {};
+    // // const newFiles = files?.filter(file => file.title.includes(keyWord));
+    // Object.keys(files).map(id=>{
+    //   if(files[id].title.includes(keyWord)){
+    //     result[id] = files[id];
+    //   }
+    // })
+    // setSearchedFiles(result);
   }
 
   //保存文件
@@ -236,64 +308,64 @@ function App() {
 
   //导入文件，展示删除导入文件
   const importFiles = () => {
-    remote.dialog.showOpenDialog({
-      title: '请选择导入的markdown文件',
-      properties: ['openFile', 'multiSelections'],
-      filters: [
-        {name: 'Markdown files', extensions: ['md']}
-      ]
-    }).then((result:any) => {
-      // console.log('result',result, result.canceled, result.filePaths);
-      const {canceled, filePaths}:{canceled:boolean,filePaths:string[]} = result;
-      if(!canceled){
-        const msg = {
-          is: false,
-          len: 0
-        }
-        //获取导入的文件
-        const fileteredPaths = filePaths.filter(path => {
-          //去除掉已经存在的文件
-          let alreadyAdded = null;
-          if(files!==undefined && files!==null && Object.keys(files).length!==0){
-            alreadyAdded = Object.values(files).find(file => {
-              // 记录有多少个文件已经存在，不必重新导入
-              if(file.path === path){
-                msg.is = true;
-                msg.len++;
-              }
-              return file.path === path;
-            })
-          }
-          return !alreadyAdded;
-        })
+    // remote.dialog.showOpenDialog({
+    //   title: '请选择导入的markdown文件',
+    //   properties: ['openFile', 'multiSelections'],
+    //   filters: [
+    //     {name: 'Markdown files', extensions: ['md']}
+    //   ]
+    // }).then((result:any) => {
+    //   // console.log('result',result, result.canceled, result.filePaths);
+    //   const {canceled, filePaths}:{canceled:boolean,filePaths:string[]} = result;
+    //   if(!canceled){
+    //     const msg = {
+    //       is: false,
+    //       len: 0
+    //     }
+    //     //获取导入的文件
+    //     const fileteredPaths = filePaths.filter(path => {
+    //       //去除掉已经存在的文件
+    //       let alreadyAdded = null;
+    //       if(files!==undefined && files!==null && Object.keys(files).length!==0){
+    //         alreadyAdded = Object.values(files).find(file => {
+    //           // 记录有多少个文件已经存在，不必重新导入
+    //           if(file.path === path){
+    //             msg.is = true;
+    //             msg.len++;
+    //           }
+    //           return file.path === path;
+    //         })
+    //       }
+    //       return !alreadyAdded;
+    //     })
         
-        //将数组转换成对象
-        let result:defaultFilesType = {};
-        fileteredPaths.map(path => {
-          const id = uuidv4();
-          result[id] = {
-            id: id,
-            title: basename(path, extname(path)),
-            path
-          }
-        })
+    //     //将数组转换成对象
+    //     let result:defaultFilesType = {};
+    //     fileteredPaths.map(path => {
+    //       const id = uuidv4();
+    //       result[id] = {
+    //         id: id,
+    //         title: basename(path, extname(path)),
+    //         path
+    //       }
+    //     })
 
-        //更新文件列表
-        const isFiles = files ?? [];
-        const newFiles = {...isFiles, ...result};
-        setFiles(newFiles);
-        saveFilesToStore(newFiles);
+    //     //更新文件列表
+    //     const isFiles = files ?? [];
+    //     const newFiles = {...isFiles, ...result};
+    //     setFiles(newFiles);
+    //     saveFilesToStore(newFiles, fileListName);
 
-        //提示
-        remote.dialog.showMessageBox({
-          type: 'info',
-          title: `导入文件`,
-          message: `共导入了${filePaths.length}个文件，成功导入了${filePaths.length - msg.len}个文件，有${msg.len}个文件已经存在。`,
-        })
-      }
-    }).catch((err:any) => {
-      console.log('err',err);
-    })
+    //     //提示
+    //     remote.dialog.showMessageBox({
+    //       type: 'info',
+    //       title: `导入文件`,
+    //       message: `共导入了${filePaths.length}个文件，成功导入了${filePaths.length - msg.len}个文件，有${msg.len}个文件已经存在。`,
+    //     })
+    //   }
+    // }).catch((err:any) => {
+    //   console.log('err',err);
+    // })
   }
 
   return (
@@ -318,10 +390,11 @@ function App() {
             {/* <FileSearch title="搜索我的文档" onFileSearch={(value)=>{filesSearch(value)}} closeSearchCallBack={()=>{setSearchedFiles([])}} /> */}
             <FileList
               files={fileListArr}
+              isNewFile={isNewFile}
+              fileListName={fileListName}
               onFileClick={(id)=>{fileClick(id)}}
               onSaveEdit={(id, value, isNew)=>{updateFileName(id,value, isNew)}}
               onFileDelete={(id)=>{deleteFile(id)}}
-              isNewFile={isNewFile}
               setIsNewFile={(id)=>{
                 setIsNewFile(id);
               }}

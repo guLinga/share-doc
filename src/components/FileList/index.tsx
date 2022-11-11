@@ -7,6 +7,9 @@ import { getParentNode } from '../../utils/helper';
 import IconFont from '../Icon/index';
 import './index.scss';
 import {defaultFiles} from '../../utils/defaultFiles';
+import { fileListNameType } from '../../App';
+
+const remote = window.require('@electron/remote');
 
 interface files {
   id: string
@@ -17,14 +20,15 @@ interface files {
 
 interface props {
   files: defaultFiles
+  isNewFile: string
+  fileListName: fileListNameType
   onFileClick: (id: string) => void
   onSaveEdit: (id: string, value:string, isNew: boolean) => void
   onFileDelete: (id: string) => void
-  isNewFile: string
   setIsNewFile: (id:string)=>void
 }
 
-function FileList({ files, onFileClick, onSaveEdit, onFileDelete,isNewFile, setIsNewFile }: props) {
+function FileList({ files, onFileClick, onSaveEdit, onFileDelete,isNewFile, setIsNewFile, fileListName }: props) {
   const [editStatus, setEditStatus] = useState('');
   const [value, setValue] = useState('');
 
@@ -74,7 +78,24 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete,isNewFile, setI
   const handleKeyUp = (event:React.KeyboardEvent<HTMLInputElement>) => {
     const {key} = event;
     const editItem = files[isNewFile];
-    if(key === 'Enter' && isNewFile!=='' && value.trim()!==''){
+    if(key === 'Enter' && isNewFile!==''){
+      if(value.trim()===''){
+        remote.dialog.showMessageBox({
+          type: 'info',
+          title: '错误',
+          message: '文件名不能为空',
+        })
+        return;
+      }
+      
+      if(fileListName[value]){
+        remote.dialog.showMessageBox({
+          type: 'info',
+          title: '错误',
+          message: '文件名已存在',
+        })
+        return;
+      }
       onSaveEdit(isNewFile, value, editItem?.isNew || false);
       setValue('');
       setEditStatus('');
@@ -125,7 +146,7 @@ function FileList({ files, onFileClick, onSaveEdit, onFileDelete,isNewFile, setI
                     style={{border: 'none'}}
                     placeholder="请输入文件名"
                     onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                      setValue(e.target.value)
+                      setValue(e.target.value);
                     }}
                     onKeyUp={(e)=>{
                       handleKeyUp(e)

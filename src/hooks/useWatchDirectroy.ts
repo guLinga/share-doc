@@ -1,5 +1,5 @@
 import { dir } from "./useResultDirectory";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {defaultFiles as defaultFilesType} from '../utils/defaultFiles';
 import { fileListNameType } from '../App';
 const {extname, basename} = window.require('path');
@@ -10,7 +10,12 @@ export const useWatchDirectroy = (callback:(tag:string,msg:{
   curr: string,
   prev?: string
 })=>void,files:defaultFilesType,fileListName:fileListNameType) => {
+  
   useEffect(()=>{
+
+    console.log('值改变了');
+    
+
     let temp:any = null;
     watch.createMonitor(dir, function (monitor:any) {
 
@@ -23,27 +28,22 @@ export const useWatchDirectroy = (callback:(tag:string,msg:{
           const suffix = extname(base);
           if(suffix==='.md'){
             const curr = basename(f, extname(f));
-            // callback('新增', {curr});
+            callback('新增', {curr});
           }
         }
-      })
-
-      //监听修改
-      monitor.on("changed", function (f:string, curr:string, prev:string) {
-        console.log('修改',f);
       })
 
       //监听删除
-      monitor.on("removed", function (f:string) {
-        const base = basename(f);
-        if(dir+"\\"+base === f){
-          const suffix = extname(base);
-          if(suffix==='.md'){
-            const curr = basename(f, extname(f));
-            // callback('删除',{curr});
+        monitor.on("removed", function (f:string) {
+          const base = basename(f);
+          if(dir+"\\"+base === f){
+            const suffix = extname(base);
+            if(suffix==='.md'){
+              const curr = basename(f, extname(f));
+              callback('删除',{curr});
+            }
           }
-        }
-      })
+        })
 
     })
 

@@ -90,13 +90,10 @@ function App() {
   useWatchDirectroy((tag,msg)=>{
     const {curr} = msg;
     switch(tag){
-      case '修改':
-        console.log('修改');
-        break;
       case '新增':
         //如果存在说明是通过软件新增的，不需要新增
-        if(fileListName[curr])return;
         console.log('新增');
+        if(fileListName[curr])return;
         const id = uuidv4();
         const temp = {
           id,

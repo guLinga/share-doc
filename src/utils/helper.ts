@@ -1,4 +1,3 @@
-import { defaultFiles } from "./defaultFiles";
 interface map{
   [key:string]:{}
 }
@@ -9,12 +8,19 @@ interface map{
  * 对象的value值是对应的数组元素
  * 
  */
-export const flattenArr = (arr:defaultFiles):Object => {
-  // return arr.reduce((map:map,item) => {
-  //   map[item.id] = item;
-  //   return map;
-  // }, {})
-  return {}
+type defaultFilesType = {
+  id:string
+  title: string
+  body?: string
+  isNew?: boolean
+  path?: string
+  isLoaded?: boolean
+}[]
+export const flattenArr = (arr:defaultFilesType):Object => {
+  return arr.reduce((map:map,item) => {
+    map[item.id] = item;
+    return map;
+  }, {})
 }
 
 /**

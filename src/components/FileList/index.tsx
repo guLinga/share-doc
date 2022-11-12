@@ -21,7 +21,7 @@ interface files {
 interface props {
   files: defaultFiles
   isNewFile: string
-  fileListName: fileListNameType
+  fileListName: defaultFiles
   originName: string
   setOriginName: (value:string)=>void
   onFileClick: (id: string) => void

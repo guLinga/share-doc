@@ -9,7 +9,7 @@ var watch = window.require('watch')
 export const useWatchDirectroy = (callback:(tag:string,msg:{
   curr: string,
   prev?: string
-})=>void,files:defaultFilesType,fileListName:fileListNameType) => {
+})=>void,fileListName:defaultFilesType, files: defaultFilesType) => {
   
   useEffect(()=>{
 
@@ -53,5 +53,5 @@ export const useWatchDirectroy = (callback:(tag:string,msg:{
     }
 
     //这里监听files和fileListName，不然，无法获取到最新的值
-  },[files, fileListName])
+  },[fileListName, files])
 }

@@ -29,7 +29,7 @@ const {basename, extname, parse} = window.require('path');
 const save = remote.app.getPath('documents');
 
 //将信息去掉body后储存到localStorage中，将文件名也储存到localStorage中
-const saveFilesToStore = (files:defaultFilesType, filesName: fileListNameType) => {
+const saveFilesToStore = (files:defaultFilesType, filesName: defaultFilesType) => {
   //将信息中的body去除掉，添加到localStorage中
   const newFiles = Object.keys(files).reduce((result:defaultFilesType, file) => {
     const {id, path, title } = files[file];
@@ -63,7 +63,7 @@ function App() {
   const [files, setFiles] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('files')||'{}'));
   
   //左侧列表文件名称的储存
-  const [fileListName, setFileListName] = useState<fileListNameType>(JSON.parse(localStorage.getItem('filesName')||"{}"));
+  const [fileListName, setFileListName] = useState<defaultFilesType>(JSON.parse(localStorage.getItem('filesName')||"{}"));
 
   //被激活的文件id
   const [activeFileId, setActiveFileId] = useState('');
@@ -104,7 +104,7 @@ function App() {
         files[id] = temp;
         setFiles({...files});
         //修改文件名列表
-        fileListName[curr] = true;
+        fileListName[curr] = temp;
         setFileListName({...fileListName});
         //储存
         saveFilesToStore(files, fileListName);
@@ -112,39 +112,33 @@ function App() {
       case '删除':
         //如果已经消失了说明是通过软件删除的，不用再次删除
         if(!fileListName[curr])return;
-        console.log('删除');
+        console.log('删除', fileListName[curr]);
+        //删除文件
+        delete files[fileListName[curr].id];
+        setFiles({...files});
         //删除文件名列表
         delete fileListName[curr];
         setFileListName({...fileListName});
-        //删除文件
-        const newFile = Object.keys(files).reduce((result:defaultFilesType,item)=>{
-          if(files[item].title!==curr){
-            result[item] = files[item];
-          }
-          return result;
-        },{})
-        setFiles({...newFile});
         //储存本地
-        saveFilesToStore(newFile, fileListName);
+        saveFilesToStore(files, fileListName);
         break;
       default:
         return;
     }
-  },files,fileListName);
+  },fileListName, files);
 
   //获取目录列表
   useResultDirectory((result)=>{
+    console.log('result',result);
+    
     //赋值文件列表
-    setFiles(result);
-    localStorage.setItem('files', JSON.stringify(result));
+    setFiles(result.files);
+    // localStorage.setItem('files', JSON.stringify(result));
     //赋值文件名称列表
-    const filesName = Object.keys(result).reduce((resultItem:fileListNameType,item)=>{
-      const title = result[item].title;
-      resultItem[title] = true;
-      return resultItem;
-    },{})
-    localStorage.setItem('filesName', JSON.stringify(filesName));
-    setFileListName(filesName);
+    setFileListName(result.fileListName);
+    //本地储存
+    saveFilesToStore(files, fileListName);
+    // localStorage.setItem('filesName', JSON.stringify(fileListName));
   })
 
   //新建文件的回调
@@ -284,20 +278,20 @@ function App() {
       const file = files[id];
       if(isNew){
         //给对象添加path
-        file.path = `${save}\\yun\\${value}.md`
+        file.path = `${save}\\.yun\\${value}.md`
         //在电脑的文档下新建文件
         fileHelper.writeFile(file.path,(''));
         //更新文件名列表
-        fileListName[value] = true;
+        fileListName[value] = file;
         setFileListName({...fileListName});
         setIsNewFile('');
       }else{
         //修改文件名
-        fileHelper.renameFile(file.path || `${save}\\yun\\${file.title}.md`, `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`);
-        file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\yun\\${value}.md`
+        fileHelper.renameFile(file.path || `${save}\\.yun\\${file.title}.md`, `${parse(file.path).dir}\\${value}.md` || `${save}\\.yun\\${value}.md`);
+        file.path = `${parse(file.path).dir}\\${value}.md` || `${save}\\.yun\\${value}.md`
         //修改文件名列表
         delete fileListName[file.title];
-        fileListName[value] = true;
+        fileListName[value] = file;
         setFileListName({...fileListName});
       }
       file.title = value;

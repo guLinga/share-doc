@@ -7,9 +7,15 @@ const fs = window.require('fs');
 const path = window.require('path');
 const remote = window.require('@electron/remote');
 const save = remote.app.getPath('documents');
-export const dir = path.join(save, 'yun'); 
-//读取文档中的yun文件，目前只读取第一层
-export const useResultDirectory = async (callback:(result:defaultFilesType)=>void) => {
+export const dir = path.join(save, '.yun'); 
+
+interface fileNameType {
+  files: defaultFilesType
+  fileListName: defaultFilesType
+}
+
+//读取文档中的.yun文件，目前只读取第一层
+export const useResultDirectory = async (callback:(result:fileNameType)=>void) => {
    useEffect(()=>{
     (async function fn(){
       if(window.name == ""){ //为空就是新的
@@ -25,17 +31,23 @@ export const useResultDirectory = async (callback:(result:defaultFilesType)=>voi
         return fs.statSync(dir + "\\" +  a).mtime.getTime() - 
                fs.statSync(dir + "\\" + b).mtime.getTime();
       });
-      let result = directory.reduce((result:defaultFilesType,item)=>{
+      let result = directory.reduce((result:fileNameType,item)=>{
         //只读取md文件，判断是否是md文件
         if(extname(item)!=='.md')return result;
         const id = uuidv4();
-        result[id] = {
+        const title = item.split('.md')[0];
+        result.files[id] = {
           id,
-          title: item.split('.md')[0],
+          title: title,
+          path: dir + "\\" + item
+        }
+        result.fileListName[title] = {
+          id,
+          title: title,
           path: dir + "\\" + item
         }
         return result;
-      },{})
+      },{files:{},fileListName:{}})
       callback(result);
     })()
   },[])

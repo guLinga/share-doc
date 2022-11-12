@@ -25,7 +25,7 @@ export const fileHelper = {
 
   //读取文件夹
   readFiles: () => {
-    return fs.readdir(paths.join(save, 'yun'));
+    return fs.readdir(paths.join(save, '.yun'));
   }
 }
 

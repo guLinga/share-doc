@@ -17,25 +17,30 @@ export const useWatchDirectroy = (callback:(tag:string,msg:{
       temp = monitor;
 
       //监听新增
-      monitor.on("created", function (f:any) {
+      monitor.on("created", function (f:string) {
         const base = basename(f);
         if(dir+"\\"+base === f){
           const suffix = extname(base);
           if(suffix==='.md'){
             const curr = basename(f, extname(f));
-            callback('新增', {curr});
+            // callback('新增', {curr});
           }
         }
       })
 
+      //监听修改
+      monitor.on("changed", function (f:string, curr:string, prev:string) {
+        console.log('修改',f);
+      })
+
       //监听删除
-      monitor.on("removed", function (f:any) {
+      monitor.on("removed", function (f:string) {
         const base = basename(f);
         if(dir+"\\"+base === f){
           const suffix = extname(base);
           if(suffix==='.md'){
             const curr = basename(f, extname(f));
-            callback('删除',{curr});
+            // callback('删除',{curr});
           }
         }
       })

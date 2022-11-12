@@ -74,6 +74,9 @@ function App() {
   //没有保存的文件列表
   const [unsavedFileIds, setUnsavedFileIds] = useState<string[]>([]);
 
+  //储存当前新建或修改文件的原名称
+  const [originName, setOriginName] = useState<string>('');
+
   //搜索的列表
   const [searchedFiles, setSearchedFiles] = useState<defaultFilesType>({});
 
@@ -87,9 +90,13 @@ function App() {
   useWatchDirectroy((tag,msg)=>{
     const {curr} = msg;
     switch(tag){
+      case '修改':
+        console.log('修改');
+        break;
       case '新增':
         //如果存在说明是通过软件新增的，不需要新增
         if(fileListName[curr])return;
+        console.log('新增');
         const id = uuidv4();
         const temp = {
           id,
@@ -108,7 +115,7 @@ function App() {
       case '删除':
         //如果已经消失了说明是通过软件删除的，不用再次删除
         if(!fileListName[curr])return;
-        
+        console.log('删除');
         //删除文件名列表
         delete fileListName[curr];
         setFileListName({...fileListName});
@@ -146,13 +153,17 @@ function App() {
   //新建文件的回调
   const clickCreateFile = () => {
     if(isNewFile!==''){
+
       //提示
       remote.dialog.showMessageBox({
         type: 'info',
         title: `错误`,
         message: `你有正在命名的文件`,
       })
+
     }else{
+
+      //创建新文件的对象中的参数
       const newId = uuidv4();
       const createFile = {
         id: newId,
@@ -160,15 +171,21 @@ function App() {
         body: '',
         isNew: true
       }
+
       //处理没有文件的特殊情况
       let filesTemp = files ?? {};
       let newFiles:defaultFilesType = {
         ...filesTemp,
         [newId]: createFile
       };
+
       //从新设置新文件和文件列表
       setIsNewFile(newId);
       setFiles(newFiles);
+
+      //设置新创建的文件的名称
+      setOriginName('');
+
     }
   }
 
@@ -237,22 +254,30 @@ function App() {
 
   //删除文件
   const deleteFile = (id:string) => {
+
     let news: boolean = false;
     if(files[id]&&!files[id].isNew){
       news = true;
+      //删除文件
       if(files[id].path!==undefined)fileHelper.deleteFile(files[id].path||'');
       //删除文件名列表
       delete fileListName[files[id].title];
       setFileListName({...fileListName});
-      //删除文件列表
-      delete files[id];
-      setFiles({...files});
     }
+
+    //删除文件列表
+    delete files[id];
+    setFiles({...files});
+
+    //如果是新文件点击了退出或关闭，则清空命名文件的id
+    setIsNewFile('');
+
     if(news){
       saveFilesToStore({...files}, fileListName);
       //如果删除文件打开，则关闭
       tabClose(id);
     }
+
   }
 
   //修改文件名称，和新增文件
@@ -396,6 +421,10 @@ function App() {
               files={fileListArr}
               isNewFile={isNewFile}
               fileListName={fileListName}
+              originName={originName}
+              setOriginName={(value)=>{
+                setOriginName(value);
+              }}
               onFileClick={(id)=>{fileClick(id)}}
               onSaveEdit={(id, value, isNew)=>{updateFileName(id,value, isNew)}}
               onFileDelete={(id)=>{deleteFile(id)}}
@@ -443,7 +472,7 @@ function App() {
                 className="editor"
                 renderHTML={text => mdParser.render(text)}
                 onChange={(e)=>{handleEditorChange(e)}}
-                view={{ menu: false, md: true, html: false }}
+                view={{ menu: true, md: true, html: false }}
               />
             </>
           }

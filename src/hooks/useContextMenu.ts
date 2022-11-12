@@ -10,7 +10,7 @@ type itemArr = {
 
 
 //传入菜单列表和绑定的元素
-export const useContextMenu = (itemArr:itemArr, targetSelector: string, deeps: defaultFiles) => {
+export const useContextMenu = (itemArr:itemArr, targetSelector: string, deeps: defaultFiles, editStatus:string) => {
   let clickedElement = useRef<EventTarget | null>(null);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const useContextMenu = (itemArr:itemArr, targetSelector: string, deeps: d
     return () => {
       window.removeEventListener('contextmenu', handleContextMenu);
     }
-  }, [deeps])
+  }, [deeps, editStatus])
 
   return clickedElement;
 }

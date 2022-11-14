@@ -1,16 +1,18 @@
-import React from 'react'
 import './index.scss';
 import IconFont from '../Icon/index';
+import { Link } from 'react-router-dom';
 
-interface props{
-  setLeftListOpen: ()=>void
-}
 
-function LeftSelector({setLeftListOpen}:props) {
+function LeftSelector() {
   return (
     <div className='leftSelector'>
       <div className='fileManagement'>
-        <IconFont type='icon-wenjianjia' onClick={setLeftListOpen} title="文件管理器"/>
+        <Link to={'/filesManager'}>
+          <IconFont type='icon-wenjianjia' title="文件管理器"/>
+        </Link>
+        <Link to={'/test'}>
+          <IconFont type='icon-wenjianjia' title="test"/>
+        </Link>
       </div>
     </div>
   )

@@ -1,0 +1,29 @@
+.icon-button{
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+.c-link{
+  cursor: pointer;
+}
+
+.editor{
+  height: calc(100vh - 40px);
+}
+
+.left-panel{
+  height: 100vh;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.button-group{
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.no-border-redius{
+  border-radius: 0 !important;
+}

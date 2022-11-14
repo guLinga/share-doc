@@ -7,7 +7,7 @@ import { getParentNode } from '../../utils/helper';
 import IconFont from '../Icon/index';
 import './index.scss';
 import {defaultFiles} from '../../utils/defaultFiles';
-import { fileListNameType } from '../../App';
+import { fileListNameType } from '../../pages/filesManager';
 
 const remote = window.require('@electron/remote');
 

@@ -1,7 +1,7 @@
 import { dir } from "./useResultDirectory";
 import { useEffect, useState } from 'react';
 import {defaultFiles as defaultFilesType} from '../utils/defaultFiles';
-import { fileListNameType } from '../App';
+import { fileListNameType } from '../pages/filesManager';
 const {extname, basename} = window.require('path');
 var watch = window.require('watch')
 

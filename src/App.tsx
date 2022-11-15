@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import LeftSelector from './components/LeftSelector'
 import FilesManager from './pages/filesManager'
-import Test from './pages/test'
+import Dairy from './pages/dairy'
 import './app.scss';
 export default function App() {
   return (
@@ -10,7 +10,7 @@ export default function App() {
         <LeftSelector />
         <Routes>
           <Route element={ <FilesManager/> } path="/filesManager" />
-          <Route element={ <Test/> } path="/test" />
+          <Route element={ <Dairy/> } path="/dairy" />
         </Routes>
       </div>
     </div>

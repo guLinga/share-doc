@@ -10,8 +10,8 @@ function LeftSelector() {
         <Link to={'/filesManager'}>
           <IconFont type='icon-wenjianjia' title="文件管理器"/>
         </Link>
-        <Link to={'/test'}>
-          <IconFont type='icon-wenjianjia' title="test"/>
+        <Link to={'/dairy'}>
+          <IconFont type='icon-wenjianjia' title="dairy"/>
         </Link>
       </div>
     </div>

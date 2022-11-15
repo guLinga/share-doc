@@ -1,0 +1,41 @@
+.calendarBody{
+  width: 100%;
+  height: 400px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  text-align: center;
+  .is{
+    color: black;
+  }
+  .no{
+    color: #b2b2b2;
+  }
+  .week{
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .listItemIs{
+    font-weight: bold;
+    transition: all .3s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &:hover{
+      background-color: #ededed;
+      font-weight: bold;
+    }
+  }
+  .listItemNo{
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}

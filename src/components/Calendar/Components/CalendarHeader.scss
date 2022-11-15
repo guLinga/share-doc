@@ -1,0 +1,28 @@
+.calendatHeaderVessels{
+  width: 100%;
+  height: 50px;
+  display: grid;
+  grid-template-columns: 50px auto 50px;
+  .headerMessage{
+    height: 100%;
+    line-height: 50px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .left{
+    transition: all .3s;
+    cursor: pointer;
+    &:hover{
+      background-color: #ededed;
+      font-weight: bold;
+    }
+  }
+  .right{
+    transition: all .3s;
+    cursor: pointer;
+    &:hover{
+      background-color: #ededed;
+      font-weight: bold;
+    }
+  }
+}

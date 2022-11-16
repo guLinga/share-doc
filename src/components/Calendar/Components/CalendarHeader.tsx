@@ -3,12 +3,16 @@ import { changeEnglish } from '../lib/utils';
 import './CalendarHeader.scss'
 import IconFont from '../../Icon/index';
 
-export default function CalendarHeader({years,months,setMonths,setYears}:calendatHeaderProps) {
+export default function CalendarHeader({
+  years,months,setMonths,setYears,
+  freezingYear,freezingMonth
+}:calendatHeaderProps) {
 
   //日历的前进和后退
   const handel = (direction:"up"|"down") => {
     switch(direction){
       case "up":
+        if(years===freezingYear&&months===freezingMonth)return;
         if(months===12){
           setYears(years+1);
           setMonths(1);

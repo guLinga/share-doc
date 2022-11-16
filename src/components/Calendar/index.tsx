@@ -5,7 +5,7 @@ import { getNowTime } from './lib/utils';
 import './index.scss';
 import CalendarBody from './Components/CalendarBody';
 import { calendarProps } from './lib/type';
-export default function Calendar({width,height,style,className}:calendarProps) {
+export default function Calendar({width,height,style,className,dayCilck}:calendarProps) {
 
   const {year,month,day} = getNowTime();
 
@@ -19,8 +19,10 @@ export default function Calendar({width,height,style,className}:calendarProps) {
   const [days, setDays] = useState(day);
 
   return (
-    <div className={`canlendarVessels ${className}`} style={{width,height}}>
+    <div className={`canlendarVessels ${className}`} style={{width,height,...style}}>
       <CalendarHeader
+        freezingYear={year}
+        freezingMonth={month}
         years={years}
         months={months}
         setYears={(year:number)=>{setYears(year)}}
@@ -29,6 +31,12 @@ export default function Calendar({width,height,style,className}:calendarProps) {
       <CalendarBody
         years={years}
         months={months}
+        freezingYear={year}
+        freezingMonth={month}
+        freezingDay={day}
+        dayCilcks={(day)=>{
+          dayCilck && dayCilck(day)
+        }}
       />
     </div>
   )

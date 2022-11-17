@@ -15,8 +15,8 @@ export default function Calendar({width,height,style,className,dayCilck}:calenda
   //设置月份
   const [months, setMonths] = useState(month);
 
-  //设置天
-  const [days, setDays] = useState(day);
+  // //设置天
+  // const [days, setDays] = useState(day);
 
   return (
     <div className={`canlendarVessels ${className}`} style={{width,height,...style}}>

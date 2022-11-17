@@ -1,0 +1,15 @@
+.diaryContentHeader{
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 50px;
+  .diaryContentHeaderListActive{
+    background-color: #0d6efd;
+    color: white;
+  }
+  .diaryContentHeaderList{
+    cursor: pointer;
+  }
+}

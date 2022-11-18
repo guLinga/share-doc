@@ -22,7 +22,7 @@ export default function ContentAudio() {
   }, [])
   return (
     <div>
-      <audio ref={audioRef} src="" id="audio" controls autoPlay>111111</audio>
+      <audio ref={audioRef} src="" id="audio" controls autoPlay></audio>
     </div>
   )
 }

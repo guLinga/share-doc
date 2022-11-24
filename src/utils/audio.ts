@@ -1,4 +1,4 @@
-enum status {
+export enum status {
   success = 200,
   error = 500
 }

@@ -11,7 +11,7 @@ function LeftSelector() {
           <IconFont type='icon-wenjianjia' title="文件管理器"/>
         </Link>
         <Link to={'/dairy'}>
-          <IconFont type='icon-wenjianjia' title="dairy"/>
+          <IconFont type='icon-rili' title="日记"/>
         </Link>
       </div>
     </div>

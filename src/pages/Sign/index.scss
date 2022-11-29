@@ -1,0 +1,64 @@
+$color: rgb(253, 76, 93);
+.active {
+  border-bottom: 2px solid #23a9f2 !important;
+  color: #23a9f2 !important;
+}
+.content {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../../static/images/envelope.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  .middleContainer {
+    width: 440px;
+    max-width: 100%;
+    height: 522px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 0 20px;
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #23a9f2;
+      font-family: "stencil";
+    }
+    .container {
+      width: 100%;
+      height: 420px;
+      background-color: #ffffff;
+      box-shadow: 8px 8px 48px rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+      margin-top: 20px;
+      position: relative;
+      .heard {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 40px;
+        padding: 0 20px;
+        .login {
+          display: block;
+          text-decoration: none;
+          color: black;
+          cursor: pointer;
+          width: 50%;
+          height: 100%;
+          line-height: 40px;
+          text-align: center;
+          font-weight: 900;
+          border-bottom: 2px solid #ffffff;
+          transition: all 0.3s;
+        }
+        .line {
+          color: #23a9f2;
+          line-height: 40px;
+        }
+      }
+    }
+  }
+}

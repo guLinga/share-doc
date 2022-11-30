@@ -8,10 +8,11 @@ import Sgin from './pages/Sign'
 import './app.scss';
 export default function App() {
   const user = useSelector(userResult);
+  
   return (
     <>
       {
-        !user || !user.id ? 
+        !user || !user.tokens ? 
           <Sgin />
         :
         <div className="App container-fluid">

@@ -1,11 +1,15 @@
-import './index.scss'
 import {useState} from 'react';
-import { valueNotEmpty } from './signIn';
+import {useDispatch} from 'react-redux';
 import { message } from 'antd';
+import { setUser } from '../../store/user';
+import { valueNotEmpty } from './signIn';
 import axios from '../../utils/axios';
+import './index.scss';
 
 function SignIn() {
   
+  const dispatch = useDispatch();
+
   // 用户名
   const [name,setName] = useState('');
   // 密码
@@ -20,7 +24,13 @@ function SignIn() {
         name,password
       }
     })
-    console.log(result);
+
+    if(result.data.code===200){
+      message.success("登录成功");
+      dispatch(setUser(result.data));
+    }else{
+      message.error(result.data.msg);
+    }
   }
 
   return (

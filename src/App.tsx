@@ -9,7 +9,6 @@ import './app.scss';
 import { useEffect } from 'react';
 export default function App() {
   const user = useSelector(userResult);
-
   //刷新页面储存redux中的数据
   useEffect(()=>{
     window.addEventListener('beforeunload', () => {

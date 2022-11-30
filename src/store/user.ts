@@ -27,6 +27,11 @@ const userSlice = createSlice({
       let {id,name,data:tokens} = action.payload;
       state.userMsg = {id,name,tokens};
       console.log('initialState.userMsg',initialState.userMsg);
+    },
+    // 获取state数据
+    getUser:(state,action) => {
+      console.log('state',state,action);
+      return state;
     }
   }
 
@@ -37,3 +42,4 @@ export const userResult = (state:{user:{userMsg:init}}) => state.user.userMsg;
 // 返回设置用户信息的方法
 export const {setUser} = userSlice.actions;
 export default userSlice.reducer
+export const userSlices = userSlice;

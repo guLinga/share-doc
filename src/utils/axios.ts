@@ -1,5 +1,7 @@
 import axios,{ AxiosRequestConfig, AxiosResponse } from 'axios'
+import { userSlices } from '../store/user';
 const apiUrl='http://localhost:3000/api'
+
 /**
  * 网络请求
  */
@@ -11,10 +13,10 @@ axios.defaults.baseURL=apiUrl
  */
 axios.interceptors.request.use(
 	(config:AxiosRequestConfig<string>) => {
+		
 		config.headers = {
-			token: 'tokens'
+			token: userSlices.getInitialState().userMsg.tokens
 		}
-		console.log('config',config);
 		
 		return config
 	},

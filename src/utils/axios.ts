@@ -11,6 +11,11 @@ axios.defaults.baseURL=apiUrl
  */
 axios.interceptors.request.use(
 	(config:AxiosRequestConfig<string>) => {
+		config.headers = {
+			token: 'tokens'
+		}
+		console.log('config',config);
+		
 		return config
 	},
 	(error:Error) => {

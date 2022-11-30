@@ -34,7 +34,7 @@ function SignUp() {
     })
     if(result.data.code===200){
       message.success('注册成功');
-      navigate('/signin');
+      navigate('/index');
     }
     else message.error(result.data.msg);
   }

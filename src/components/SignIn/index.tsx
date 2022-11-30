@@ -1,6 +1,7 @@
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import {useDispatch} from 'react-redux';
 import { message } from 'antd';
+import {useNavigate} from 'react-router-dom'
 import { setUser } from '../../store/user';
 import { valueNotEmpty } from './signIn';
 import axios from '../../utils/axios';
@@ -9,6 +10,7 @@ import './index.scss';
 function SignIn() {
   
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // 用户名
   const [name,setName] = useState('');

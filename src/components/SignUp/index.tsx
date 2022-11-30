@@ -2,7 +2,7 @@ import './index.scss'
 import axios from '../../utils/axios';
 import {useState} from 'react';
 import { message } from 'antd';
-import { valueNotEmpty, emailRightful } from '.';
+import { valueNotEmpty, emailRightful } from './signUp';
 import {useNavigate} from 'react-router-dom'
 
 function SignUp() {

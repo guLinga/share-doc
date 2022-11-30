@@ -1,5 +1,8 @@
 import './index.scss'
 import {useState} from 'react';
+import { valueNotEmpty } from './signIn';
+import { message } from 'antd';
+import axios from '../../utils/axios';
 
 function SignIn() {
   
@@ -8,7 +11,17 @@ function SignIn() {
   // 密码
   const [password,setPassword] = useState('');
 
-  const login = () => {}
+  const login = async () => {
+    const temp = valueNotEmpty(name,password);
+    if(!temp.is)return message.error(temp.msg);
+    let result = await axios({
+      url:'/users/login',
+      params: {
+        name,password
+      }
+    })
+    console.log(result);
+  }
 
   return (
     <div id="Login">

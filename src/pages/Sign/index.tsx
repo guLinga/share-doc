@@ -1,6 +1,6 @@
 import './index.scss'
 import { Link, Route, Routes } from 'react-router-dom';
-import SignIn from '../../components/SignIn/signIn';
+import SignIn from '../../components/SignIn';
 import SignUp from '../../components/SignUp';
 function Sgin() {
   return (

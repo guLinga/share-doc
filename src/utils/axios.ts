@@ -14,8 +14,11 @@ axios.defaults.baseURL=apiUrl
 axios.interceptors.request.use(
 	(config:AxiosRequestConfig<string>) => {
 		
+		console.log(userSlices.getInitialState());
+		
 		config.headers = {
-			token: userSlices.getInitialState().userMsg.tokens
+			token: userSlices.getInitialState().userMsg ? 
+			userSlices.getInitialState().userMsg.tokens : null
 		}
 		
 		return config

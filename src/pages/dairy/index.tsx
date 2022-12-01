@@ -10,7 +10,7 @@ export default function Test() {
   const [date,setDate] = useState('');
 
   // 日期列表
-  const [dateList,setDateList] = useState(null);
+  const [dateList,setDateList] = useState<string[]>();
 
   useEffect(()=>{
     (async function fn(){
@@ -27,7 +27,7 @@ export default function Test() {
         }}/>
       </div>
       <div>
-          <DiaryContent date={date} />
+          <DiaryContent date={date} setDateList={setDateList} dateList={dateList} />
       </div>
     </div>
   )

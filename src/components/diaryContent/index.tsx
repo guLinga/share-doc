@@ -9,7 +9,7 @@ import ContentVideo from '../diaryContentMessage/contentVideo';
 import ContentChat from '../diaryContentMessage/contentChat';
 import axios from '../../utils/axios';
 import { getNowTimeStr } from '../../utils/date';
-export default function DiaryContent({date}:diaryContentProps) {
+export default function DiaryContent({date,setDateList,dateList}:diaryContentProps) {
   const [listText,setListText] = useState<string>('日记');
 
   const [content,setContent] = useState('');
@@ -17,7 +17,6 @@ export default function DiaryContent({date}:diaryContentProps) {
   useEffect(()=>{
     (async function fn(){
       setListText("日记");
-      console.log('请求数据',date,listText);
       let result = await axios({
         url: '/diary/search',
         params: {
@@ -43,7 +42,7 @@ export default function DiaryContent({date}:diaryContentProps) {
       <div>
         {
           listText === '日记'&&
-          <ContentDiary content={content} />
+          <ContentDiary content={content} date={date} setDateList={setDateList} dateList={dateList}/>
         }
         {
           listText === '附件'&&

@@ -30,7 +30,6 @@ axios.interceptors.request.use(
  */
 axios.interceptors.response.use(
 	(response:AxiosResponse<{code:number}>) => {
-		console.log('response',response);
 		return response
 	},
 	(error:Error) => {

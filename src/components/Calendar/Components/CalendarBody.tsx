@@ -21,7 +21,9 @@ export default function CalendarBody({
 
   const dayClick = (children:children) => {
     if(children.is){
-      const date = `${years}-${months}-${children.value}`;
+      let monthsStr = months>10 ? months : `0${months}`;
+      let dayStr = children.value>10 ? children.value : `0${children.value}`;
+      const date = `${years}-${monthsStr}-${dayStr}`;
       setSelectorDay(date);
       dayCilcks(date);
     }

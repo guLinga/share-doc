@@ -26,6 +26,7 @@ export default function DiaryContent({date}:diaryContentProps) {
       })
       if(result.data.data)
       setContent(result.data.data.article);
+      else setContent('');
     })()
   },[date])
 

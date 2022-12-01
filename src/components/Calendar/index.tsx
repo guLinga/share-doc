@@ -5,8 +5,9 @@ import { getNowTime } from './lib/utils';
 import './index.scss';
 import CalendarBody from './Components/CalendarBody';
 import { calendarProps } from './lib/type';
-export default function Calendar({width,height,style,className,dayCilck}:calendarProps) {
+export default function Calendar({dataList,width,height,style,className,dayCilck}:calendarProps) {
 
+  // 获取当前的时间
   const {year,month,day} = getNowTime();
 
   //设置年份日期
@@ -14,9 +15,6 @@ export default function Calendar({width,height,style,className,dayCilck}:calenda
 
   //设置月份
   const [months, setMonths] = useState(month);
-
-  // //设置天
-  // const [days, setDays] = useState(day);
 
   return (
     <div className={`canlendarVessels ${className}`} style={{width,height,...style}}>
@@ -29,6 +27,7 @@ export default function Calendar({width,height,style,className,dayCilck}:calenda
         setMonths={(month:number)=>{setMonths(month)}}
       />
       <CalendarBody
+        dataList={dataList}
         years={years}
         months={months}
         freezingYear={year}

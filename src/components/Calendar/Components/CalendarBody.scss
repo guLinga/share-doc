@@ -14,10 +14,17 @@
   .now{
     color: #0d6efd;
     font-weight: 900;
+    background-color: rgba($color: #0d6efd, $alpha: .3);
+  }
+  .list{
+    color: red;
+    font-weight: 900;
+    background-color: rgba($color: red, $alpha: .3);
   }
   .selector{
     color: orange;
     font-weight: 900;
+    background-color: rgba($color: orange, $alpha: .3);
   }
   .week{
     height: 30px;

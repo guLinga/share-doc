@@ -8,6 +8,7 @@ export interface calendatHeaderProps{
 }
 
 export interface CalendarBodyProps{
+  dataList: string[] | null | undefined
   years: number
   months: number
   freezingYear: number
@@ -29,6 +30,7 @@ export type calenderResult = ({
 }[])[]
 
 export interface calendarProps{
+  dataList?: string[] | null | undefined
   width?: string
   height?: string
   style?: {}

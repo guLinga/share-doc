@@ -7,17 +7,31 @@ import ContentFiles from '../diaryContentMessage/contentFiles';
 import ContentAudio from '../diaryContentMessage/contentAudio';
 import ContentVideo from '../diaryContentMessage/contentVideo';
 import ContentChat from '../diaryContentMessage/contentChat';
+import axios from '../../utils/axios';
+import { getNowTimeStr } from '../../utils/date';
 export default function DiaryContent({date}:diaryContentProps) {
   const [listText,setListText] = useState<string>('日记');
 
-  useEffect(()=>{
-    setListText("日记");
-    console.log('请求数据',date,listText);
-  },[date])
+  const [content,setContent] = useState('');
 
   useEffect(()=>{
-    console.log('请求数据',date,listText);
-  }, [listText])
+    (async function fn(){
+      setListText("日记");
+      console.log('请求数据',date,listText);
+      let result = await axios({
+        url: '/diary/search',
+        params: {
+          time: date ? date : getNowTimeStr()
+        }
+      })
+      if(result.data.data)
+      setContent(result.data.data.article);
+    })()
+  },[date])
+
+  // useEffect(()=>{
+  //   console.log('请求数据',date,listText);
+  // }, [listText])
 
   return (
     <div className='diaryContent'>
@@ -28,7 +42,7 @@ export default function DiaryContent({date}:diaryContentProps) {
       <div>
         {
           listText === '日记'&&
-          <ContentDiary />
+          <ContentDiary content={content} />
         }
         {
           listText === '附件'&&

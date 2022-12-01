@@ -1,10 +1,10 @@
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite-plus';
-import { editor } from './type';
+import { editor, props } from './type';
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
-export default function ContentDiary() {
+export default function ContentDiary({content}:props) {
 
   //编辑器回调
   function handleEditorChange({ text,html }:editor) {
@@ -14,6 +14,7 @@ export default function ContentDiary() {
   return (
     <div>
       <MdEditor
+        value={content}
         className="editor"
         renderHTML={text => mdParser.render(text)}
         onChange={(e)=>{handleEditorChange(e)}}

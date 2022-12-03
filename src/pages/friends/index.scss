@@ -1,0 +1,10 @@
+#friends{
+  flex: 1;
+  display: flex;
+  background-color: white;
+  height: 100vh;
+  overflow: hidden;
+  .test{
+    flex: 1;
+  }
+}

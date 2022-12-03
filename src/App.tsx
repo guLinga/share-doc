@@ -7,6 +7,7 @@ import Dairy from './pages/dairy'
 import Sign from './pages/Sign'
 import './app.scss';
 import { useEffect } from 'react';
+import Friends from './pages/friends/index';
 export default function App() {
   const user = useSelector(userResult);
   //刷新页面储存redux中的数据
@@ -30,6 +31,7 @@ export default function App() {
             <Routes>
               <Route element={ <FilesManager/> } path="/filesManager" />
               <Route element={ <Dairy/> } path="/index" />
+              <Route element={ <Friends/> } path="/friend" />
               <Route path='/' element={<Navigate to="/index"/>} />
             </Routes>
           </div>

@@ -1,13 +1,18 @@
 const isDev = require('electron-is-dev');
 const path = require('path');
 const { app, BrowserWindow } = require('electron');
+const electron = require('electron');
 require('@electron/remote/main').initialize()
-
+const Menu  = electron.Menu;
 
 app.on('ready', () => {
+  // Menu.setApplicationMenu(null)
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 680,
+    autoHideMenuBar: true,
+    // frame: false,
+    // titleBarStyle: 'hidden',
     webPreferences: {
       preload: "./preload.js",
       nodeIntegration: true,

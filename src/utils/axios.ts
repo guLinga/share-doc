@@ -1,6 +1,10 @@
 import axios,{ AxiosRequestConfig, AxiosResponse } from 'axios'
 import store from '../store';
-const apiUrl='http://localhost:3000/api'
+
+const apiUrl= 
+			process.env.NODE_ENV === 'development' ?
+			'http://localhost:3000/api' :
+			'http://localhost:8000'
 
 /**
  * 网络请求

@@ -8,6 +8,7 @@ import IconFont from '../Icon/index';
 import './index.scss';
 import {defaultFiles} from '../../utils/defaultFiles';
 import { fileListNameType } from '../../pages/filesManager';
+import { message } from 'antd';
 
 const remote = window.require('@electron/remote');
 
@@ -124,11 +125,12 @@ function FileList(
       }
       
       if(fileListName[value]){
-        remote.dialog.showMessageBox({
-          type: 'info',
-          title: '错误',
-          message: '文件名已存在',
-        })
+        // remote.dialog.showMessageBox({
+        //   type: 'info',
+        //   title: '错误',
+        //   message: '文件名已存在',
+        // })
+        message.error('文件名已存在');
         return;
       }
 
@@ -153,11 +155,12 @@ function FileList(
     }
 
     if(fileListName[value]){
-      remote.dialog.showMessageBox({
-        type: 'info',
-        title: '错误',
-        message: '文件名已存在',
-      })
+      // remote.dialog.showMessageBox({
+      //   type: 'info',
+      //   title: '错误',
+      //   message: '文件名已存在',
+      // })
+      message.error('文件名已存在');
       return;
     }
     
@@ -198,16 +201,16 @@ function FileList(
                     <IconFont type='icon-markdown' />
                   </span>
                   <span
-                    className=''
+                    className='item'
                   >{file.title}</span>
                 </>
               }
               {
                 (file.id === editStatus || file.isNew) &&
                 <>
-                  <input 
+                  <input
                     value={value}
-                    className="col-10 modifyInput"
+                    className="col-12 modifyInput"
                     style={{border: 'none'}}
                     placeholder="请输入文件名"
                     onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
@@ -218,9 +221,9 @@ function FileList(
                     }}
                     onBlur={noFocusCreateFile}
                   />
-                  <button type='button' className='icon-button col-2' onClick={()=>{closeSearch(file)}}>
+                  {/* <button type='button' className='icon-button col-2' onClick={()=>{closeSearch(file)}}>
                     <FontAwesomeIcon title='关闭' size='lg' icon={faTimes} />
-                  </button>
+                  </button> */}
                 </>
               }
             </li>

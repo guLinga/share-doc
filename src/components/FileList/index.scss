@@ -3,20 +3,29 @@
   list-style: none;
   padding: 0 !important;
   .fileListItem{
+    position: relative;
     cursor: pointer;
     vertical-align: top;
     padding: 0px 10px;
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
     font-size: 14px;
     .fileListItemIcon{
-      font-size: 18px;
-      line-height: 18px;
+      font-size: 25px;
       margin-right: 10px;
       color: red;
     }
+    .item{
+      font-weight: 600;
+      font-family: '微软雅黑';
+    }
     &:hover{
       background-color: #bcd8f6;
+    }
+    .modifyInput{
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 }

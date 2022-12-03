@@ -1,5 +1,5 @@
 import axios,{ AxiosRequestConfig, AxiosResponse } from 'axios'
-import { userSlices } from '../store/user';
+import store from '../store';
 const apiUrl='http://localhost:3000/api'
 
 /**
@@ -14,11 +14,9 @@ axios.defaults.baseURL=apiUrl
 axios.interceptors.request.use(
 	(config:AxiosRequestConfig<string>) => {
 		
-		// console.log(userSlices.getInitialState());
-		
 		config.headers = {
-			token: userSlices.getInitialState().userMsg ? 
-			userSlices.getInitialState().userMsg.tokens : null
+			token: store.getState().user.userMsg ? 
+			store.getState().user.userMsg.tokens : null
 		}
 		
 		return config

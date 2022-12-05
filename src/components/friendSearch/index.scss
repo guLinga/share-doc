@@ -1,12 +1,26 @@
+$height1:40px;
+$height2:30px;
+$marTop: ($height1 - $height2) / 2;
 #friendSearch{
   width: 100%;
-  height: 40px;
+  height: $height1;
   background-color: red;
   display: flex;
   .search{
-
+    flex: 1;
+    .searchIpt{
+      border-radius: 0;
+      height: $height2;
+      margin-top: $marTop;
+    }
   }
   .add{
-    
+    width: 40px;
+    cursor: pointer;
+    .item{
+      text-align: center;
+      line-height: $height1;
+      display: block;
+    }
   }
 }

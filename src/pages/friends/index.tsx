@@ -1,5 +1,7 @@
 import { Resizable } from 're-resizable';
 import './index.scss';
+import FriendsListVessles from '../../components/friendsListVessels/index';
+
 function Friends() {
   return (
     <div id="friends">
@@ -14,10 +16,10 @@ function Friends() {
         maxWidth="60%"
         minHeight="100%"
       >
-        111
+        <FriendsListVessles />
       </Resizable>
-      <div className='test'>
-        222
+      <div className='right'>
+
       </div>
     </div>
   )

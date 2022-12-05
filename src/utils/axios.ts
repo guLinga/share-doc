@@ -17,6 +17,7 @@ axios.defaults.baseURL=apiUrl
  */
 axios.interceptors.request.use(
 	(config:AxiosRequestConfig<string>) => {
+		console.log('token',store.getState().user.userMsg);
 		
 		config.headers = {
 			token: store.getState().user.userMsg ? 

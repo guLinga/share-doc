@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios,{ AxiosRequestConfig, AxiosResponse } from 'axios'
 import store from '../store';
 
@@ -17,7 +18,6 @@ axios.defaults.baseURL=apiUrl
  */
 axios.interceptors.request.use(
 	(config:AxiosRequestConfig<string>) => {
-		console.log('token',store.getState().user.userMsg);
 		
 		config.headers = {
 			token: store.getState().user.userMsg ? 
@@ -35,7 +35,10 @@ axios.interceptors.request.use(
  * 响应拦截器
  */
 axios.interceptors.response.use(
-	(response:AxiosResponse<{code:number}>) => {
+	(response:AxiosResponse<{code:number,msg:string}>) => {
+		if(response.data.code!==200){
+			message.error(response.data.msg);
+		}
 		return response
 	},
 	(error:Error) => {

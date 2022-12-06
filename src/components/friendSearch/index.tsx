@@ -1,16 +1,19 @@
 import './index.scss'
-import { Input, Modal } from 'antd'
+import { Button, Input, Modal, message } from 'antd';
 import { useRef, useState } from 'react';
-import { Dropdown, message, Space } from 'antd';
-import type { MenuProps } from 'antd';
+import { Dropdown, Space, MenuProps } from 'antd';
 import type { DraggableData, DraggableEvent } from 'react-draggable';
 import Draggable from 'react-draggable';
+import axios from '../../utils/axios';
+import DifferentAlert from '../../WrappedComponent/Alerts';
+
+const SEARCH_USER_WHIT_NAME = '通过对方的用户名查询'
 
 // 点击加号的下拉菜单
 const items: MenuProps['items'] = [
   {
     label: '加好友',
-    key: '加好友',
+    key: SEARCH_USER_WHIT_NAME,
   },
   {
     label: '加群',
@@ -29,26 +32,30 @@ function FriendSearch() {
   const [val, setVal] = useState('');
   // 点击后的key值
   const [key, setKey] = useState('');
+  // 弹窗中搜索的输入框
+  const [addVal,setAddVal] = useState('');
+  // 查询数据列表
+  const [userList,setUserList] = useState<{id:number,name:string}[]>([]);
+  // 是否查询用户
+  const [isSearch,setIsSearch] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
   const draggleRef = useRef<HTMLDivElement>(null);
 
+  // 点击菜单，弹出弹窗
   const onClick: MenuProps['onClick'] = ({ key }) => {
-    message.info(`Click on item ${key}`);
     setOpen(true);
     setKey(key);
   };
 
-  const handleOk = (e: React.MouseEvent<HTMLElement>) => {
-    console.log("确定");
+  // 关闭弹窗
+  const handleCancel = () => {
     setOpen(false);
-  };
-
-  const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
-    console.log("取消");
-    setOpen(false);
+    setKey('');
+    setAddVal('');
+    setIsSearch(false);
   };
 
   const onStart = (_event: DraggableEvent, uiData: DraggableData) => {
@@ -64,6 +71,23 @@ function FriendSearch() {
       bottom: clientHeight - (targetRect.bottom - uiData.y),
     });
   };
+
+  // 根据用户名搜索用户
+  const searchUser = async () => {
+    if(addVal.trim().length===0)return message.error('用户名不能为空');
+    let result = await axios({
+      url: '/users/searchName',
+      params: {
+        name: addVal
+      }
+    })
+    if(result.data.code===200){
+      console.log(addVal);
+      console.log(result.data.data);
+      setUserList(result.data.data);
+    }
+    setIsSearch(true);
+  }
 
   return (
     <div id='friendSearch'>
@@ -100,8 +124,8 @@ function FriendSearch() {
             {key}
           </div>
         }
+        footer={null}
         open={open}
-        onOk={handleOk}
         onCancel={handleCancel}
         modalRender={(modal) => (
           <Draggable
@@ -113,9 +137,26 @@ function FriendSearch() {
           </Draggable>
         )}
       >
-        <p>
-          {key}
-        </p>
+        <div className='searchVessels'>
+          <Input className='searchIpt' placeholder={key} allowClear value={addVal} onChange={(e) => { setAddVal(e.target.value) }} />
+          <Button type='primary' className='searchBtn' onClick={searchUser}>查询</Button>
+        </div>
+        {
+          isSearch && 
+          <div className='searchResult'>
+            {
+              userList.map((item) => {
+                return (
+                  <div key={item.id}>{item.name}</div>
+                )
+              })
+            }
+            {
+              userList.length===0 &&
+              DifferentAlert('info','没有找到符合搜索条件的用户')()
+            }
+          </div>
+        }
       </Modal>
     </div >
   )

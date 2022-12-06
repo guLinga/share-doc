@@ -1,15 +1,18 @@
 $height1:40px;
 $height2:30px;
 $marTop: ($height1 - $height2) / 2;
+.bor-a-none{
+  border-radius: 0;
+}
 #friendSearch{
   width: 100%;
   height: $height1;
-  background-color: red;
+  // background-color: red;
   display: flex;
   .search{
     flex: 1;
     .searchIpt{
-      border-radius: 0;
+      @extend .bor-a-none;
       height: $height2;
       margin-top: $marTop;
     }
@@ -23,4 +26,21 @@ $marTop: ($height1 - $height2) / 2;
       display: block;
     }
   }
+}
+
+.searchVessels{
+  display: flex;
+  .searchIpt{
+    @extend .bor-a-none;
+  }
+  .searchBtn{
+    @extend .bor-a-none;
+  }
+}
+
+.searchResult{
+  max-height: 350px;
+  overflow-y: auto;
+  margin-top: 20px;
+  // background-color: red;
 }

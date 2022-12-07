@@ -5,10 +5,10 @@ import {props} from './type'
 import { useState, useEffect, createContext, useRef } from 'react';
 import {Input} from 'antd';
 import { RightBtn } from './component';
-import { TextAreaRef, TextAreaProps } from 'antd/es/input/TextArea';
 
 const { TextArea } = Input;
 
+// 层级传递点击好友的id
 export const UserIdContext = createContext<{selectUserId:number|undefined,setSelectUserId:React.Dispatch<React.SetStateAction<number | undefined>>}|undefined>(undefined);
 
 function Friends({socket,userId}:props) {
@@ -16,7 +16,11 @@ function Friends({socket,userId}:props) {
   // 输入框
   const inputEl = useRef(null);
 
+  // 点击笔友的id
   const [selectUserId,setSelectUserId] = useState<number|undefined>(undefined);
+
+  // 显示消息的测试
+  const [test,setTest] = useState('');
 
   // 发送消息
   const send = () => {
@@ -36,7 +40,8 @@ function Friends({socket,userId}:props) {
   useEffect(()=>{
     if (socket.current) {
       socket.current.on("msg-recieve", (msg:string) => {
-        console.log('msg-recieve-msg:',msg,msg.replace('\n','<br>'));
+        console.log('msg-recieve-msg:',msg);
+        setTest(msg);
       });
     }
   },[socket.current])
@@ -64,7 +69,10 @@ function Friends({socket,userId}:props) {
               userId:{userId},selectUserId:{selectUserId}
               <div className='chat'>
               <div className='header'>昵称</div>
-                <div className='message white-space:pre'></div>
+                <div className='message white-space:pre' dangerouslySetInnerHTML={{__html: test.replace(/\n/g, '<br/>')}}></div>
+                {/* <div className='message white-space:pre'>
+                  {test}
+                </div> */}
                 <div className='send'>
                   <TextArea ref={inputEl} style={{height:'100%'}} rows={4}/>
                   <RightBtn type='primary' onClick={send}>发送</RightBtn>

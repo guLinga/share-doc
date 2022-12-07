@@ -32,6 +32,7 @@ export default function App() {
       socket.current = io('http://localhost:8000');
       socket.current.emit('add-user',userId)
       setUserId(userId);
+      console.log('userId',userId);
     }
   },[user])
 

@@ -1,10 +1,13 @@
-import { configureStore } from '@reduxjs/toolkit'//引入toolkit
-import userReducer from './user'//引入的reducer函数，在下面会介绍到
+import { configureStore } from '@reduxjs/toolkit';
+import userReducer from './user';
 import friendReducer from './friend';
+import myFriendQuestSlice from './my_friend_quest';
+
 export default configureStore({
   reducer: {
     user: userReducer,
-    friend: friendReducer
+    friend: friendReducer,
+    myQuest: myFriendQuestSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

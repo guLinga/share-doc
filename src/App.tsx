@@ -36,6 +36,15 @@ export default function App() {
     }
   },[user])
 
+  // 接收消息
+  useEffect(()=>{
+    if (socket.current) {
+      socket.current.on("msg-recieve", (msg:string) => {
+        console.log('msg-recieve-msg:',msg);
+      });
+    }
+  },[socket.current])
+
   return (
     <>
       {/* token鉴权 */}

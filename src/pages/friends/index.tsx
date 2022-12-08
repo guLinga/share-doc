@@ -2,7 +2,7 @@ import { Resizable } from 're-resizable';
 import './index.scss';
 import FriendsListVessles from '../../components/friendsListVessels/index';
 import {props} from './type'
-import { useState, useEffect, createContext, useRef } from 'react';
+import { useState, createContext, useRef } from 'react';
 import {Input} from 'antd';
 import { RightBtn } from './component';
 
@@ -19,9 +19,6 @@ function Friends({socket,userId}:props) {
   // 点击笔友的id
   const [selectUser,setSelectUser] = useState<{userId:number,name:string}|undefined>(undefined);
 
-  // 显示消息的测试
-  const [test,setTest] = useState('');
-
   // 发送消息
   const send = () => {
     //@ts-ignore
@@ -35,16 +32,6 @@ function Friends({socket,userId}:props) {
       msg: val
     })
   }
-
-  // 接收消息
-  useEffect(()=>{
-    if (socket.current) {
-      socket.current.on("msg-recieve", (msg:string) => {
-        console.log('msg-recieve-msg:',msg);
-        setTest(msg);
-      });
-    }
-  },[socket.current])
 
   return (
     <UserIdContext.Provider value={{selectUser,setSelectUser}}>
@@ -68,7 +55,8 @@ function Friends({socket,userId}:props) {
             <>
               <div className='chat'>
               <div className='header'>{selectUser.name}</div>
-                <div className='message white-space:pre' dangerouslySetInnerHTML={{__html: test.replace(/\n/g, '<br/>')}}></div>
+                <div className='message'></div>
+                {/* <div className='message white-space:pre' dangerouslySetInnerHTML={{__html: test.replace(/\n/g, '<br/>')}}></div> */}
                 <div className='send'>
                   <TextArea ref={inputEl} style={{height:'100%'}} rows={4}/>
                   <RightBtn type='primary' onClick={send}>发送</RightBtn>

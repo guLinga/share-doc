@@ -14,14 +14,21 @@ function FriendAllList() {
 
   // 加载用户列表，调用store里面的异步请求加载好友列表
   useEffect(()=>{
+    console.log(friend,Object.keys(friend).length);
+    
     //@ts-ignore
-    dispatch(friendList());
+    if(Object.keys(friend).length===0)dispatch(friendList());
   },[])
+
+  useEffect(()=>{
+    console.log('friend',friend);
+  },[friend])
 
   return (
     <>
       {
-        friend.map((item)=>{
+        Object.keys(friend).map((key)=>{
+          const item = friend[parseInt(key)];
           return (
             <div key={item.friendId} className={
               selectUser?.selectUser?.userId===item.friendId ? 'itemVessels itemAction' : 'itemVessels'

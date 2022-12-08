@@ -9,10 +9,12 @@ interface init{
 
 // 初始化用户信息
 const initialState:{
-  friendList: init[] | never[]
+  friendList: {
+    [key:number]: init
+  }
   statue: 'loading' | 'succeeded' | 'failed' | ''
 } = {
-  friendList: [],
+  friendList: {},
   statue: ''
 }
 
@@ -45,7 +47,11 @@ const friendSlice = createSlice({
     })
     .addCase(friendList.fulfilled, (state, action) => {
       if(state.statue!=='succeeded'){
-        state.friendList = state.friendList.concat(action.payload.data.data);
+        const result = action.payload.data.data.reduce((pre:{[key:string]:init},item:init)=>{
+          pre[item.friendId] = item;
+          return pre;
+        },{})
+        state.friendList = result
         state.statue = 'succeeded'
       }
     })
@@ -57,5 +63,5 @@ const friendSlice = createSlice({
 
 })
 
-export const friendResult = (state:{friend:{friendList:init[]}}) => state.friend.friendList;
+export const friendResult = (state:{friend:{friendList:{[key:number]:init}}}) => state.friend.friendList;
 export default friendSlice.reducer

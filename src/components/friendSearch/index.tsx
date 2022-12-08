@@ -82,11 +82,24 @@ function FriendSearch() {
       }
     })
     if(result.data.code===200){
-      console.log(addVal);
-      console.log(result.data.data);
       setUserList(result.data.data);
     }
     setIsSearch(true);
+  }
+
+  // 添加好友
+  const addFriend = async (friendName:string) => {
+    let result = await axios({
+      url: '/friend/quest',
+      method: 'POST',
+      data: {
+        friendName
+      }
+    })
+    // 添加好友的处理
+    if(result.data.code===200){
+      message.success(result.data.msg);
+    }
   }
 
   return (
@@ -147,7 +160,12 @@ function FriendSearch() {
             {
               userList.map((item) => {
                 return (
-                  <div key={item.id}>{item.name}</div>
+                  <div key={item.id} className='item'>
+                    <div className='name'>{item.name}</div>
+                    <Button type='default' className='btns' onClick={()=>{
+                      addFriend(item.name)
+                    }}>加好友</Button>
+                  </div>
                 )
               })
             }

@@ -9,7 +9,7 @@ import { RightBtn } from './component';
 const { TextArea } = Input;
 
 // 层级传递点击好友的id
-export const UserIdContext = createContext<{selectUserId:number|undefined,setSelectUserId:React.Dispatch<React.SetStateAction<number | undefined>>}|undefined>(undefined);
+export const UserIdContext = createContext<{selectUser:{userId:number,name:string}|undefined,setSelectUser:React.Dispatch<React.SetStateAction<{userId:number,name:string}|undefined>>}|undefined>(undefined);
 
 function Friends({socket,userId}:props) {
 
@@ -17,7 +17,7 @@ function Friends({socket,userId}:props) {
   const inputEl = useRef(null);
 
   // 点击笔友的id
-  const [selectUserId,setSelectUserId] = useState<number|undefined>(undefined);
+  const [selectUser,setSelectUser] = useState<{userId:number,name:string}|undefined>(undefined);
 
   // 显示消息的测试
   const [test,setTest] = useState('');
@@ -30,7 +30,7 @@ function Friends({socket,userId}:props) {
     console.log(String(inputEl.current.resizableTextArea.textArea.value));
     
     socket.current?.emit("send-msg",{
-      to: selectUserId,
+      to: selectUser?.userId,
       from: userId,
       msg: val
     })
@@ -47,7 +47,7 @@ function Friends({socket,userId}:props) {
   },[socket.current])
 
   return (
-    <UserIdContext.Provider value={{selectUserId,setSelectUserId}}>
+    <UserIdContext.Provider value={{selectUser,setSelectUser}}>
       <div id="friends">
         <Resizable
           defaultSize={{
@@ -64,15 +64,11 @@ function Friends({socket,userId}:props) {
         </Resizable>
         <div className='right'>
           {
-            selectUserId!==undefined && 
+            selectUser!==undefined && 
             <>
-              userId:{userId},selectUserId:{selectUserId}
               <div className='chat'>
-              <div className='header'>昵称</div>
+              <div className='header'>{selectUser.name}</div>
                 <div className='message white-space:pre' dangerouslySetInnerHTML={{__html: test.replace(/\n/g, '<br/>')}}></div>
-                {/* <div className='message white-space:pre'>
-                  {test}
-                </div> */}
                 <div className='send'>
                   <TextArea ref={inputEl} style={{height:'100%'}} rows={4}/>
                   <RightBtn type='primary' onClick={send}>发送</RightBtn>

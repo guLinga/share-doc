@@ -1,3 +1,53 @@
 #friendsList{
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  .item{
+    display: block;
+    color: #000;
+    font-weight: 600;
+    font-family: '宋体';
+    margin-bottom: 15px;
+    .ant-space-item{
+      line-height: 10px;
+      .anticon{
+        font-size: 18px;
+        cursor: pointer;
+      }
+    }
+  }
+  $height: 60px;
+  $pad: 10px;
+  .main{
+    flex: 1;
+    .itemVessels{
+      margin-bottom: 2px;
+      height: $height;
+      position: relative;
+      padding: 0 $pad;
+      cursor: pointer;
+      &:hover{
+        background-color: #ededee;
+      }
+      .name{
+        height: 100%;
+        line-height: $height;
+        color: #484b50;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+      .time{
+        position: absolute;
+        color: #9299a2;
+        font-size: 12px;
+        top: 0;
+        right: $pad;
+      }
+    }
+    .itemAction{
+      background-color: #e6f0ff;
+      &:hover{
+        background-color: #e6f0ff;
+      }
+    }
+  }
 }

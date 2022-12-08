@@ -1,5 +1,6 @@
 $height1:40px;
 $height2:30px;
+$height3:32px;
 $marTop: ($height1 - $height2) / 2;
 .bor-a-none{
   border-radius: 0;
@@ -39,8 +40,30 @@ $marTop: ($height1 - $height2) / 2;
 }
 
 .searchResult{
-  max-height: 350px;
+  max-height: 300px;
   overflow-y: auto;
   margin-top: 20px;
-  // background-color: red;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  .item{
+    height: $height3;
+    line-height: $height3;
+    background-color: #f6f6fb;
+    width: 49%;
+    margin-left: 0.5%;
+    margin-bottom: 3px;
+    padding-left: 5px;
+    cursor: pointer;
+    display: flex;
+    .name{
+      flex: 1;
+    }
+    .btns{
+      width: 70px;
+      padding: 0 5px;
+      font-size: 12px;
+      align-self: center;
+    }
+  }
 }

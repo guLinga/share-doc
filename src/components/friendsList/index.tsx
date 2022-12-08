@@ -1,38 +1,74 @@
 import './index.scss'
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useContext } from 'react';
-import { friendList, friendResult } from '../../store/friend';
-import { UserIdContext } from '../../pages/friends/index';
+import {useState} from 'react';
+import { Dropdown, MenuProps, Space } from 'antd';
+import FriendAllList from '../friendAllList/index';
+import FriendNotRead from '../friendNotRead/index';
+import MyFriendRequest from '../myFriendRequest/index';
+import GetFriendQuest from '../getFriendQuest';
+import IconFont from '../Icon/index';
+
+// 不同菜单对应的信息
+const ALL = '全部';
+const NOT_READ = '未读';
+const MY_FRIEND_REQUEST = '我的好友请求';
+const GET_FRIEND_REQUEST = '收到的好友请求';
+
+// 选择不同消息的菜单
+const items: MenuProps['items'] = [
+  {
+    label: '全部',
+    key: ALL
+  },
+  {
+    label: '未读',
+    key: NOT_READ
+  },
+  {
+    label: '我的好友请求',
+    key: MY_FRIEND_REQUEST
+  },
+  {
+    label: '收到的好友请求',
+    key: GET_FRIEND_REQUEST
+  }
+];
 
 function FriendsList() {
-  const dispatch = useDispatch();
-  const friend = useSelector(friendResult);
+  
+  
 
-  const selectUser = useContext(UserIdContext);
+  // 菜单key值的保存
+  const [key,setKey] = useState(ALL);
 
-  // 加载用户列表
-  useEffect(()=>{
-    //@ts-ignore
-    dispatch(friendList());
-  },[])
+  
 
-  useEffect(()=>{
-    console.log('friend',friend);
-  },[friend])
+  const onClick: MenuProps['onClick'] = ({ key }) => {
+    setKey(key);
+  };
 
   return (
     <div id='friendsList'>
-      {
-        friend.map((item)=>{
-          return (
-            <div key={item.friendId} onClick={()=>{
-              selectUser?.setSelectUserId(item.friendId);
-            }}>
-              {item.name}-{item.updateAt}
-            </div>
-          )
-        })
-      }
+      <Dropdown menu={{ items, onClick }}>
+        <a className='a item' onClick={(e) => e.preventDefault()}>
+          <Space>
+            <IconFont type='icon-zhankai' />{key}
+          </Space>
+        </a>
+      </Dropdown>
+      <div className='main'>
+        {
+          key === ALL && <FriendAllList />
+        }
+        {
+          key === NOT_READ && <FriendNotRead />
+        }
+        {
+          key === MY_FRIEND_REQUEST && <MyFriendRequest />
+        }
+        {
+          key === GET_FRIEND_REQUEST && <GetFriendQuest />
+        }
+      </div>
     </div>
   )
 }

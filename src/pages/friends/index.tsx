@@ -2,7 +2,7 @@ import { Resizable } from 're-resizable';
 import './index.scss';
 import FriendsListVessles from '../../components/friendsListVessels/index';
 import {props} from './type'
-import { useState, createContext, useRef } from 'react';
+import { useState, createContext, useRef, useEffect } from 'react';
 import {Input} from 'antd';
 import { RightBtn } from './component';
 
@@ -32,6 +32,13 @@ function Friends({socket,userId}:props) {
       msg: val
     })
   }
+
+  // 当好友id变化时将输入框变空
+  useEffect(()=>{
+    if(inputEl.current)
+    // @ts-ignore
+    inputEl.current.resizableTextArea.textArea.value = '';
+  },[selectUser?.userId])
 
   return (
     <UserIdContext.Provider value={{selectUser,setSelectUser}}>

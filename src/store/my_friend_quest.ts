@@ -14,9 +14,12 @@ const initialState = {
 }
 
 // 异步请求用户列表
-export const myFriendQuest = createAsyncThunk('myFriendQuest/myFriendQuest',async () => {
+export const myFriendQuest = createAsyncThunk('myFriendQuest/myFriendQuest',async (friendId) => {
   const result = await axios({
-    url: '/friend/myFriendQuest'
+    url: '/friend/myFriendQuest',
+    params: {
+      friendId
+    }
   })
   return result;
 })
@@ -37,17 +40,13 @@ const myFriendQuestSlice = createSlice({
   extraReducers(builder){
     builder
     .addCase(myFriendQuest.pending, (state, _) => {
-      if(state.statue!=='succeeded')
       state.statue = 'loading'
     })
     .addCase(myFriendQuest.fulfilled, (state, action) => {
-      if(state.statue!=='succeeded'){
-        state.friendList = state.friendList.concat(action.payload.data.data);
-        state.statue = 'succeeded'
-      }
+      state.friendList = state.friendList.concat(action.payload.data.data);
+      state.statue = 'succeeded'
     })
     .addCase(myFriendQuest.rejected, (state, _) => {
-      if(state.statue!=='succeeded')
       state.statue = 'failed'
     })
   }

@@ -2,7 +2,10 @@ import { Resizable } from 're-resizable';
 import './index.scss';
 import FriendsListVessles from '../../components/friendsListVessels/index';
 import {props} from './type'
+import {friendResult} from '../../store/friend';
+import { chatList as chatLists } from '../../store/friend';
 import { useState, createContext, useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {Input} from 'antd';
 import { RightBtn } from './component';
 
@@ -13,11 +16,17 @@ export const UserIdContext = createContext<{selectUser:{userId:number,name:strin
 
 function Friends({socket,userId}:props) {
 
+  const dispatch = useDispatch();
+
   // 输入框
   const inputEl = useRef(null);
 
   // 点击笔友的id
   const [selectUser,setSelectUser] = useState<{userId:number,name:string}|undefined>(undefined);
+
+  // 用户聊天列表
+  const chatList = useSelector(friendResult);
+  const userChatList = selectUser?.userId ? chatList[selectUser?.userId].chat : [];
 
   // 发送消息
   const send = () => {
@@ -31,11 +40,17 @@ function Friends({socket,userId}:props) {
     })
   }
 
-  // 当好友id变化时将输入框变空
   useEffect(()=>{
+    // 当好友id变化时将输入框变空
     if(inputEl.current)
     // @ts-ignore
     inputEl.current.resizableTextArea.textArea.value = '';
+    // 当好友id变化时，判断是否需要异步请求聊天记录
+    if(selectUser?.userId&&!chatList[selectUser?.userId].is){
+      //异步请求获取聊天记录
+      // @ts-ignore
+      dispatch(chatLists(selectUser.userId));
+    }
   },[selectUser?.userId])
 
   return (
@@ -60,7 +75,15 @@ function Friends({socket,userId}:props) {
             <>
               <div className='chat'>
               <div className='header'>{selectUser.name}</div>
-                <div className='message'></div>
+                <div className='message'>
+                  {
+                    userChatList?.map((item)=>{
+                      return (
+                        <div key={item.id}>{item.message}</div>
+                      )
+                    })
+                  }
+                </div>
                 {/* <div className='message white-space:pre' dangerouslySetInnerHTML={{__html: test.replace(/\n/g, '<br/>')}}></div> */}
                 <div className='send'>
                   <TextArea ref={inputEl} style={{height:'100%'}} rows={4}/>

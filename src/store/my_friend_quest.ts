@@ -14,12 +14,9 @@ const initialState = {
 }
 
 // 异步请求用户列表
-export const myFriendQuest = createAsyncThunk('myFriendQuest/myFriendQuest',async (friendId) => {
+export const myFriendQuest = createAsyncThunk('myFriendQuest/myFriendQuest',async () => {
   const result = await axios({
-    url: '/friend/myFriendQuest',
-    params: {
-      friendId
-    }
+    url: '/friend/myFriendQuest'
   })
   return result;
 })

@@ -4,7 +4,17 @@ import axios from '../utils/axios';
 interface init{
   friendId: number,
   name: string,
-  updateAt: string
+  updateAt: string,
+  is?: boolean,
+  chat?: chat[]
+}
+
+interface chat{
+  friendId:number,
+  userId: number,
+  message: string,
+  updateAt: string,
+  id: number
 }
 
 // 初始化用户信息
@@ -24,6 +34,20 @@ export const friendList = createAsyncThunk('friend/friendList',async () => {
     url: '/friend/friendList'
   })
   return result;
+})
+
+// 异步请求聊天记录
+export const chatList = createAsyncThunk('friend/chatList', async (friendId:number) => {
+  const result = await axios({
+    url: '/friend/messageList',
+    params: {
+      friendId
+    }
+  })
+  return {
+    friendId:friendId,
+    result
+  };
 })
 
 // store
@@ -48,6 +72,8 @@ const friendSlice = createSlice({
     .addCase(friendList.fulfilled, (state, action) => {
       if(state.statue!=='succeeded'){
         const result = action.payload.data.data.reduce((pre:{[key:string]:init},item:init)=>{
+          item.is = false;
+          item.chat = [];
           pre[item.friendId] = item;
           return pre;
         },{})
@@ -58,6 +84,16 @@ const friendSlice = createSlice({
     .addCase(friendList.rejected, (state, _) => {
       if(state.statue!=='succeeded')
       state.statue = 'failed'
+    })
+
+    builder
+    .addCase(chatList.fulfilled, (state, action) => {
+      if(action.payload.result.data.code===200){
+        state.friendList[action.payload.friendId].is = true;
+        state.friendList[action.payload.friendId].chat = action.payload.result.data.data;
+      }
+      // state.friendList = result
+      state.statue = 'succeeded'
     })
   }
 

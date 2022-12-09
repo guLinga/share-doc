@@ -92,7 +92,6 @@ function FilesManager() {
     switch(tag){
       case '新增':
         //如果存在说明是通过软件新增的，不需要新增
-        console.log('新增');
         if(fileListName[curr])return;
         const id = uuidv4();
         const temp = {
@@ -112,7 +111,6 @@ function FilesManager() {
       case '删除':
         //如果已经消失了说明是通过软件删除的，不用再次删除
         if(!fileListName[curr])return;
-        console.log('删除', fileListName[curr]);
         //删除文件
         delete files[fileListName[curr].id];
         setFiles({...files});

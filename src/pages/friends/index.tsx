@@ -23,8 +23,6 @@ function Friends({socket,userId}:props) {
   const send = () => {
     //@ts-ignore
     const val = inputEl.current.resizableTextArea.textArea.value;
-    //@ts-ignore
-    console.log(String(inputEl.current.resizableTextArea.textArea.value));
     
     socket.current?.emit("send-msg",{
       to: selectUser?.userId,

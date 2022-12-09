@@ -12,10 +12,7 @@ export const useWatchDirectroy = (callback:(tag:string,msg:{
 })=>void,fileListName:defaultFilesType, files: defaultFilesType) => {
   
   useEffect(()=>{
-
-    console.log('值改变了');
     
-
     let temp:any = null;
     watch.createMonitor(dir, function (monitor:any) {
 

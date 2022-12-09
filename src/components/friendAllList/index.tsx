@@ -14,15 +14,9 @@ function FriendAllList() {
 
   // 加载用户列表，调用store里面的异步请求加载好友列表
   useEffect(()=>{
-    console.log(friend,Object.keys(friend).length);
-    
     //@ts-ignore
     if(Object.keys(friend).length===0)dispatch(friendList());
   },[])
-
-  useEffect(()=>{
-    console.log('friend',friend);
-  },[friend])
 
   return (
     <>

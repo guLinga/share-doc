@@ -20,9 +20,7 @@ export const useResultDirectory = async (callback:(result:fileNameType)=>void) =
     (async function fn(){
       if(window.name == ""){ //为空就是新的
         window.name = 'isReload';
-        console.log('first in page');
       }else if(window.name == 'isReload'){ //有预设值就是刷新的
-        console.log('page refresh....');
         return;
       }
       //查询到的目录中的全部文件名称

@@ -15,10 +15,6 @@ function MyFriendRequest() {
     dispatch(myFriendQuest());
   },[])
 
-  useEffect(()=>{
-    console.log('muQuestList',muQuestList);
-  },[muQuestList])
-
   return (
     <>
       {

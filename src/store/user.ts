@@ -26,11 +26,9 @@ const userSlice = createSlice({
     setUser:(state,action) => {
       let {id,name,data:tokens} = action.payload;
       state.userMsg = {id,name,tokens};
-      console.log('initialState.userMsg',initialState.userMsg);
     },
     // 获取state数据
-    getUser:(state,action) => {
-      console.log('state',state,action);
+    getUser:(state,_) => {
       return state;
     }
   }

@@ -3,18 +3,19 @@ import './index.scss';
 import FriendsListVessles from '../../components/friendsListVessels/index';
 import {props} from './type'
 import {friendResult} from '../../store/friend';
-import { chatList as chatLists } from '../../store/friend';
+import { chatList as chatLists, addMessage } from '../../store/friend';
 import { useState, createContext, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {Input} from 'antd';
 import { RightBtn } from './component';
+import axios from '../../utils/axios';
 
 const { TextArea } = Input;
 
 // 层级传递点击好友的id
 export const UserIdContext = createContext<{selectUser:{userId:number,name:string}|undefined,setSelectUser:React.Dispatch<React.SetStateAction<{userId:number,name:string}|undefined>>}|undefined>(undefined);
 
-function Friends({socket,userId}:props) {
+function Friends({socket,userMessage}:props) {
 
   const dispatch = useDispatch();
 
@@ -29,15 +30,44 @@ function Friends({socket,userId}:props) {
   const userChatList = selectUser?.userId ? chatList[selectUser?.userId].chat : [];
 
   // 发送消息
-  const send = () => {
+  const send = async () => {
     //@ts-ignore
     const val = inputEl.current.resizableTextArea.textArea.value;
-    
-    socket.current?.emit("send-msg",{
-      to: selectUser?.userId,
-      from: userId,
-      msg: val
+    let result = await axios({
+      url: '/friend/send',
+      method: 'POST',
+      data: {
+        friendId: selectUser?.userId,
+        message: val
+      }
     })
+    console.log(result);
+    
+    if(result.data.code===200){
+      // 消息发送成功后socket向对方发送消息
+      socket.current?.emit("send-msg",{
+        to: selectUser?.userId,
+        from: userMessage?.id,
+        msg: {id: selectUser?.userId,data:{
+          friendId: selectUser?.userId,
+          userId: userMessage?.id,
+          message: val,
+          updateAt: '',
+          id: result.data.data[0].insertId,
+        }}
+      })
+      // 消息发送成功后，调用store的方法，向自身的store添加数据
+      dispatch(addMessage({id: selectUser?.userId,data:{
+        friendId: selectUser?.userId,
+        userId: userMessage?.id,
+        message: val,
+        updateAt: '',
+        id: result.data.data[0].insertId,
+      }}));
+      // 发送成功后将输入框信息清空
+      // @ts-ignore
+      inputEl.current.resizableTextArea.textArea.value = '';
+    }
   }
 
   useEffect(()=>{
@@ -79,7 +109,20 @@ function Friends({socket,userId}:props) {
                   {
                     userChatList?.map((item)=>{
                       return (
-                        <div key={item.id}>{item.message}</div>
+                        <div className={item.userId===userMessage?.id?'rightVessels messageVessels':'leftVessels messageVessels'} key={item.id}>
+                          {
+                            item.userId === userMessage?.id &&<>
+                              <div className='messageContent'>{item.message}</div>
+                              <div className='headerName'>{userMessage.name[0]}</div>
+                            </>
+                          }
+                          {
+                            item.userId === selectUser.userId && <>
+                              <div  className='headerName'>{selectUser.name[0]}</div>
+                              <div  className='messageContent'>{item.message}</div>
+                            </>
+                          }
+                        </div>
                       )
                     })
                   }

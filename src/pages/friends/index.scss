@@ -1,4 +1,5 @@
 $border-color: #e0e0e0;
+$height:30px;
 
 #friends{
   flex: 1;
@@ -30,6 +31,50 @@ $border-color: #e0e0e0;
         width: 100%;
         background-color: #f5f6f7;
         flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px;
+        .messageVessels{
+          margin-bottom: 10px;
+          width: 45%;
+          display: flex;
+          .headerName{
+            width: $height;
+            height: $height;
+            line-height: 25px;
+            font-weight: 600;
+            font-size: 25px;
+            background-color: #00c5ab;
+            text-align: center;
+            color: white;
+          }
+          .messageContent{
+            flex: 1;
+            word-break: break-all;
+            line-height: $height;
+            padding: 5px 10px;
+            background-color: white;
+          }
+        }
+        .rightVessels{
+          align-self: flex-end;
+          .headerName{
+            margin-left: 20px;
+          }
+          .messageContent{
+            text-align: right;
+          }
+        }
+        .leftVessels{
+          align-self: flex-start;
+          .headerName{
+            margin-right: 20px;
+          }
+          .messageContent{
+            text-align: left;
+          }
+        }
       }
       .send{
         width: 100%;

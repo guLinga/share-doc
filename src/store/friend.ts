@@ -58,8 +58,9 @@ const friendSlice = createSlice({
     
 
   reducers: {
-    setUser:(state,action) => {
-      
+    // 添加消息
+    addMessage:(state,action) => {
+      state.friendList[action.payload.id].chat?.push(action.payload.data);
     },
   },
   // 异步请求
@@ -100,4 +101,5 @@ const friendSlice = createSlice({
 })
 
 export const friendResult = (state:{friend:{friendList:{[key:number]:init}}}) => state.friend.friendList;
+export const {addMessage} = friendSlice.actions;
 export default friendSlice.reducer

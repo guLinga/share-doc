@@ -2,5 +2,8 @@ import { Socket } from "socket.io-client";
 
 export interface props{
   socket:React.MutableRefObject<Socket | null>
-  userId: number | undefined
+  userMessage: {
+    id: number;
+    name: string;
+  } | undefined
 }

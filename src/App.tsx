@@ -23,7 +23,10 @@ export default function App() {
   const socket = useRef<Socket | null>(null);
 
   // 储存userId
-  const [userId,setUserId] = useState<number | undefined>();
+  const [userMessage,setUserMessage] = useState<{
+    id: number;
+    name: string;
+  } | undefined>();
 
   useEffect(()=>{
     if(user&&user.tokens){
@@ -31,7 +34,7 @@ export default function App() {
       const userId = userMessage[0].id;
       socket.current = io('http://localhost:8000');
       socket.current.emit('add-user',userId)
-      setUserId(userId);
+      setUserMessage(userMessage[0]);
     }
   },[user])
 
@@ -58,7 +61,7 @@ export default function App() {
             <Routes>
               <Route element={ <FilesManager/> } path="/filesManager" />
               <Route element={ <Dairy/> } path="/index" />
-              <Route element={ <Friends socket={socket} userId={userId} /> } path="/friend" />
+              <Route element={ <Friends socket={socket} userMessage={userMessage} /> } path="/friend" />
               <Route path='/' element={<Navigate to="/index"/>} />
             </Routes>
           </div>

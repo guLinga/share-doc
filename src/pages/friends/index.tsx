@@ -41,14 +41,13 @@ function Friends({socket,userMessage}:props) {
         message: val
       }
     })
-    console.log(result);
     
     if(result.data.code===200){
       // 消息发送成功后socket向对方发送消息
       socket.current?.emit("send-msg",{
         to: selectUser?.userId,
         from: userMessage?.id,
-        msg: {id: selectUser?.userId,data:{
+        msg: {id: userMessage?.id,data:{
           friendId: selectUser?.userId,
           userId: userMessage?.id,
           message: val,

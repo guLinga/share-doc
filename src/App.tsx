@@ -1,5 +1,5 @@
 import { Route, Routes, Navigate } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import { io, Socket } from "socket.io-client";
 import jwtDecode from 'jwt-decode'
 import { userResult } from './store/user'
@@ -11,7 +11,13 @@ import './app.scss';
 import { useEffect, useRef } from 'react';
 import Friends from './pages/friends/index';
 import {useState} from 'react';
+import { addMessage, friendList, friendResult } from './store/friend';
 export default function App() {
+
+  const dispatch = useDispatch();
+
+  const friend = useSelector(friendResult);
+
   const user = useSelector(userResult);
   //刷新页面储存redux中的数据
   useEffect(()=>{
@@ -38,14 +44,21 @@ export default function App() {
     }
   },[user])
 
+  // 加载用户列表，调用store里面的异步请求加载好友列表
+  useEffect(()=>{
+    // @ts-ignore
+    if(Object.keys(friend).length===0&&user&&user.tokens)dispatch(friendList());
+  },[user])
+
   // 接收消息
   useEffect(()=>{
-    if (socket.current) {
+    if (socket.current&&user&&user.tokens) {
       socket.current.on("msg-recieve", (msg:string) => {
-        console.log('msg-recieve-msg:',msg);
+        console.log('msg-friend',msg,friend);
+        dispatch(addMessage(msg));
       });
     }
-  },[socket.current])
+  },[user])
 
   return (
     <>

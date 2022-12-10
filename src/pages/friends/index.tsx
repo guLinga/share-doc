@@ -111,14 +111,22 @@ function Friends({socket,userMessage}:props) {
                         <div className={item.userId===userMessage?.id?'rightVessels messageVessels':'leftVessels messageVessels'} key={item.id}>
                           {
                             item.userId === userMessage?.id &&<>
-                              <div className='messageContent'>{item.message}</div>
+                              <div className='messageContent'>
+                                <div>
+                                  {item.message}
+                                </div>
+                              </div>
                               <div className='headerName'>{userMessage.name[0]}</div>
                             </>
                           }
                           {
                             item.userId === selectUser.userId && <>
                               <div  className='headerName'>{selectUser.name[0]}</div>
-                              <div  className='messageContent'>{item.message}</div>
+                              <div  className='messageContent'>
+                                <div>
+                                  {item.message}
+                                </div>
+                              </div>
                             </>
                           }
                         </div>

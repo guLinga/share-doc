@@ -53,8 +53,11 @@ $height:30px;
             flex: 1;
             word-break: break-all;
             line-height: $height;
-            padding: 5px 10px;
-            background-color: white;
+            div{
+              display: inline-block;
+              background-color: white;
+              padding: 5px 10px;
+            }
           }
         }
         .rightVessels{

@@ -22,12 +22,30 @@ function Friends({socket,userMessage}:props) {
   // 输入框
   const inputEl = useRef(null);
 
+  // 滚动条滚动到最下面
+  const messagesEndRef = useRef(null);
+
   // 点击笔友的id
   const [selectUser,setSelectUser] = useState<{userId:number,name:string}|undefined>(undefined);
 
   // 用户聊天列表
   const chatList = useSelector(friendResult);
   const userChatList = selectUser?.userId ? chatList[selectUser?.userId].chat : [];
+
+  // 滚动条滚动到最下面
+  const scroll = () => {
+    if(selectUser?.userId&&chatList[selectUser?.userId].is){
+      const current = messagesEndRef.current!
+      //scrollHeight是页面的高度
+      // @ts-ignore
+      current.scrollTop = current.scrollHeight
+    }
+  }
+
+  // 监听消息的变化，将滚动条滚动到最下面
+  useEffect(()=>{
+    scroll()
+  },[userChatList])
 
   // 发送消息
   const send = async () => {
@@ -104,7 +122,7 @@ function Friends({socket,userMessage}:props) {
             <>
               <div className='chat'>
               <div className='header'>{selectUser.name}</div>
-                <div className='message'>
+                <div className='message' ref={messagesEndRef}>
                   {
                     userChatList?.map((item)=>{
                       return (

@@ -54,7 +54,6 @@ export default function App() {
   useEffect(()=>{
     if (socket.current&&user&&user.tokens) {
       socket.current.on("msg-recieve", (msg:string) => {
-        console.log('msg-friend',msg,friend);
         dispatch(addMessage(msg));
       });
     }

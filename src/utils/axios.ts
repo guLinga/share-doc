@@ -5,7 +5,7 @@ import store from '../store';
 const apiUrl= 
 			process.env.NODE_ENV === 'development' ?
 			'http://localhost:3000/api' :
-			'http://localhost:8000'
+			'http://150.158.95.113:8000'
 
 /**
  * 网络请求

@@ -47,7 +47,7 @@ function SignUp() {
     let result = await axios({
       url: '/users/code',
       params: {
-        email: '2634917964@qq.com'
+        email
       }
     })
     if(result.data.code===200)message.success('验证码发送成功');

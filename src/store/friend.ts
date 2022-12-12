@@ -65,6 +65,17 @@ const friendSlice = createSlice({
     addMessage:(state,action) => {
       state.friendList[action.payload.id].chat?.push(action.payload.data);
     },
+    // 增加未读消息的数量
+    addUnread:(state,action) => {
+      console.log(action.payload);
+      state.unread++;
+      state.friendList[action.payload.friendId].unread++;
+    },
+    // 清除未读消息的数量
+    clearUnread:(state,action) => {
+      state.unread -= state.friendList[action.payload.friendId].unread;
+      state.friendList[action.payload.friendId].unread = 0;
+    }
   },
   // 异步请求
   extraReducers(builder){
@@ -108,5 +119,5 @@ const friendSlice = createSlice({
 
 export const unreadNum = (state:{friend:{unread:number}}) => state.friend.unread;
 export const friendResult = (state:{friend:{friendList:{[key:number]:init}}}) => state.friend.friendList;
-export const {addMessage} = friendSlice.actions;
+export const {addMessage,addUnread,clearUnread} = friendSlice.actions;
 export default friendSlice.reducer

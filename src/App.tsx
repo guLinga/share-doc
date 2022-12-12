@@ -11,8 +11,9 @@ import './app.scss';
 import { useEffect, useRef } from 'react';
 import Friends from './pages/friends/index';
 import {useState} from 'react';
-import { addMessage, friendList, friendResult } from './store/friend';
+import { addMessage, friendList, friendResult, addUnread } from './store/friend';
 import { myFriendQuest, getFriendQuest, myFriendQuestResult, getFriendQuestResult } from './store/my_friend_quest';
+import axios from 'axios';
 
 const socketUrl = process.env.NODE_ENV === 'development' ?
 'http://localhost:8000' : 'http://150.158.95.113:8000'
@@ -66,8 +67,20 @@ export default function App() {
   // 接收消息
   useEffect(()=>{
     if (socket.current&&user&&user.tokens) {
-      socket.current.on("msg-recieve", (msg:string) => {
+      socket.current.on("msg-recieve", (msg:{id:number,data:{}}) => {
         dispatch(addMessage(msg));
+        // 如果已经打开了该好友的聊天窗口那么就将未读消息清空，且不向redux中添加未读数量
+        if(msg.id===userMessage?.id){
+          axios({
+            url: '/friend/clearUnread',
+            method: 'PUT',
+            data: {
+              friendId: msg.id
+            }
+          })
+        }else{
+          dispatch(addUnread({friendId:msg.id}));
+        }
       });
     }
   },[user])

@@ -43,6 +43,31 @@
         right: $pad;
       }
     }
+    .myFriendQuest{
+      display: flex;
+      .name{
+        flex: 1;
+      }
+      .await{
+        line-height: $height;
+        width: 80px;
+        text-align: end;
+        font-size: 12px;
+        color: #9299a2;
+      }
+    }
+    .gerFriendQuest{
+      display: flex;
+      .name{
+        flex: 1;
+      }
+      .yes{
+        align-self: center;
+      }
+      .no{
+        align-self: center;
+      }
+    }
     .itemAction{
       background-color: #e6f0ff;
       &:hover{

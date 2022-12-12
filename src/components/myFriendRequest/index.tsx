@@ -13,8 +13,9 @@ function MyFriendRequest() {
         Object.keys(list).map((idx)=>{
           const item = list[parseInt(idx)];
           return (
-            <div key={item.friendId} className='itemVessels'>
+            <div key={item.friendId} className='itemVessels myFriendQuest'>
               <div className='name'>{item.name}</div>
+              <div className='await'>等待验证</div>
               <div className='time'>{item.updateAt.replace('T',' ').replace('.000Z','')}</div>
             </div>
           )

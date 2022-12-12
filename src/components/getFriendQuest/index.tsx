@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { useSelector } from "react-redux";
 import { getFriendQuestResult } from "../../store/my_friend_quest";
 
@@ -13,8 +14,10 @@ function GetFriendQuest() {
         Object.keys(list).map((idx)=>{
           const item = list[parseInt(idx)];
           return (
-            <div key={item.friendId} className='itemVessels'>
+            <div key={item.friendId} className='itemVessels gerFriendQuest'>
               <div className='name'>{item.name}</div>
+              <Button type="primary" size="small" className="yes">同意</Button>
+              <Button type="primary" size="small" danger className="no">拒绝</Button>
               <div className='time'>{item.updateAt.replace('T',' ').replace('.000Z','')}</div>
             </div>
           )

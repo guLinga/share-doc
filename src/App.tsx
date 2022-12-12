@@ -12,17 +12,20 @@ import { useEffect, useRef } from 'react';
 import Friends from './pages/friends/index';
 import {useState} from 'react';
 import { addMessage, friendList, friendResult } from './store/friend';
+import { myFriendQuest, getFriendQuest, myFriendQuestResult, getFriendQuestResult } from './store/my_friend_quest';
 
 const socketUrl = process.env.NODE_ENV === 'development' ?
 'http://localhost:8000' : 'http://150.158.95.113:8000'
 
 export default function App() {
 
+  // 获取store中的数据
   const dispatch = useDispatch();
-
   const friend = useSelector(friendResult);
-
+  const myQuest = useSelector(myFriendQuestResult);
+  const getQuest = useSelector(getFriendQuestResult);
   const user = useSelector(userResult);
+
   //刷新页面储存redux中的数据
   useEffect(()=>{
     window.addEventListener('beforeunload', () => {
@@ -30,14 +33,16 @@ export default function App() {
     });
   })
 
+  // 定义socket.io
   const socket = useRef<Socket | null>(null);
 
-  // 储存userId
+  // 储存user信息
   const [userMessage,setUserMessage] = useState<{
     id: number;
     name: string;
   } | undefined>();
 
+  // 发送socket.io连接
   useEffect(()=>{
     if(user&&user.tokens){
       const {userMessage} = jwtDecode<{userMessage:[{id:number,name:string}]}>(user.tokens);
@@ -48,10 +53,14 @@ export default function App() {
     }
   },[user])
 
-  // 加载用户列表，调用store里面的异步请求加载好友列表
+  // 用户关于笔友信息的异步遍历
   useEffect(()=>{
-    // @ts-ignore
+    // 加载用户列表，调用store里面的异步请求加载好友列表
     if(Object.keys(friend).length===0&&user&&user.tokens)dispatch(friendList());
+    // 异步请求我发送的好友请求列表
+    if(user&&user.tokens&&!myQuest.is)dispatch(myFriendQuest());
+    // 遍历我收到的好友请求列表
+    if(user&&user.tokens&&!getQuest.is)dispatch(getFriendQuest());
   },[user])
 
   // 接收消息

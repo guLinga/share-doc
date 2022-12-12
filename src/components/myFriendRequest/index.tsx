@@ -1,24 +1,17 @@
-import {useSelector, useDispatch} from 'react-redux'
-import {myFriendQuest, myFriendQuestResult} from '../../store/my_friend_quest';
-import { useEffect } from 'react';
+import {useSelector} from 'react-redux'
+import {myFriendQuestResult} from '../../store/my_friend_quest';
 
 function MyFriendRequest() {
 
-  const dispatch = useDispatch();
-
   // 获取我发送的好友请求列表
-  const muQuestList = useSelector(myFriendQuestResult);
-
-  // 异步请求我发送的好友请求列表
-  useEffect(()=>{
-    // @ts-ignore
-    dispatch(myFriendQuest());
-  },[])
+  const myQuestList = useSelector(myFriendQuestResult);
+  const list = myQuestList.list;
 
   return (
     <>
       {
-        muQuestList.map((item)=>{
+        Object.keys(list).map((idx)=>{
+          const item = list[parseInt(idx)];
           return (
             <div key={item.friendId} className='itemVessels'>
               <div className='name'>{item.name}</div>

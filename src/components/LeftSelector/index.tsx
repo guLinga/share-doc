@@ -8,8 +8,6 @@ import { useSelector } from 'react-redux';
 function LeftSelector() {
 
   const unread = useSelector(unreadNum);
-  console.log(unread);
-  
 
   return (
     <div className='leftSelector'>

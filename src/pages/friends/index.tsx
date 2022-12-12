@@ -15,7 +15,7 @@ const { TextArea } = Input;
 // 层级传递点击好友的id
 export const UserIdContext = createContext<{selectUser:{userId:number,name:string}|undefined,setSelectUser:React.Dispatch<React.SetStateAction<{userId:number,name:string}|undefined>>}|undefined>(undefined);
 
-function Friends({socket,userMessage}:props) {
+function Friends({socket,userMessage,selectUserId}:props) {
 
   const dispatch = useDispatch();
 
@@ -31,6 +31,13 @@ function Friends({socket,userMessage}:props) {
   // 用户聊天列表
   const chatList = useSelector(friendResult);
   const userChatList = selectUser?.userId ? chatList[selectUser?.userId].chat : [];
+
+  // 向APP组件中传递选中的用户id
+  useEffect(()=>{
+    if(selectUser?.userId!==undefined){
+      selectUserId(selectUser?.userId)
+    }
+  },[selectUser?.userId])
 
   // 滚动条滚动到最下面
   const scroll = () => {

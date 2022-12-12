@@ -6,4 +6,5 @@ export interface props{
     id: number;
     name: string;
   } | undefined
+  selectUserId: React.Dispatch<React.SetStateAction<number | undefined>>
 }

@@ -27,6 +27,9 @@ export default function App() {
   const getQuest = useSelector(getFriendQuestResult);
   const user = useSelector(userResult);
 
+  // 获取选择的用户id
+  const [selectUserId,setSelectUserId] = useState<number|undefined>(undefined);
+
   //刷新页面储存redux中的数据
   useEffect(()=>{
     window.addEventListener('beforeunload', () => {
@@ -67,10 +70,12 @@ export default function App() {
   // 接收消息
   useEffect(()=>{
     if (socket.current&&user&&user.tokens) {
+      // 这里取消监听"msg-recieve"，否则会存在多个监听，发送一条信息可以收到好几条
+      socket.current.removeListener("msg-recieve");
       socket.current.on("msg-recieve", (msg:{id:number,data:{}}) => {
         dispatch(addMessage(msg));
         // 如果已经打开了该好友的聊天窗口那么就将未读消息清空，且不向redux中添加未读数量
-        if(msg.id===userMessage?.id){
+        if(msg.id===selectUserId){
           axios({
             url: '/friend/clearUnread',
             method: 'PUT',
@@ -83,7 +88,7 @@ export default function App() {
         }
       });
     }
-  },[user])
+  },[user,selectUserId])
 
   return (
     <>
@@ -99,7 +104,9 @@ export default function App() {
             <Routes>
               <Route element={ <FilesManager/> } path="/filesManager" />
               <Route element={ <Dairy/> } path="/index" />
-              <Route element={ <Friends socket={socket} userMessage={userMessage} /> } path="/friend" />
+              <Route element={ <Friends socket={socket} userMessage={userMessage} selectUserId={(id)=>{
+                setSelectUserId(id)
+              }} /> } path="/friend" />
               <Route path='/' element={<Navigate to="/index"/>} />
             </Routes>
           </div>

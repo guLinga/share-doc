@@ -29,7 +29,6 @@ function FriendAllList() {
           friendId
         }
       })
-      console.log(result);
       if(result.data.code===200){
         dispatch(clearUnread({friendId}));
       }

@@ -12,6 +12,10 @@ import { useEffect, useRef } from 'react';
 import Friends from './pages/friends/index';
 import {useState} from 'react';
 import { addMessage, friendList, friendResult } from './store/friend';
+
+const socketUrl = process.env.NODE_ENV === 'development' ?
+'http://localhost:8000' : 'http://150.158.95.113:8000'
+
 export default function App() {
 
   const dispatch = useDispatch();
@@ -38,7 +42,7 @@ export default function App() {
     if(user&&user.tokens){
       const {userMessage} = jwtDecode<{userMessage:[{id:number,name:string}]}>(user.tokens);
       const userId = userMessage[0].id;
-      socket.current = io('http://localhost:8000');
+      socket.current = io(socketUrl);
       socket.current.emit('add-user',userId)
       setUserMessage(userMessage[0]);
     }

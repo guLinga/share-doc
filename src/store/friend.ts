@@ -6,7 +6,8 @@ interface init{
   name: string,
   updateAt: string,
   is?: boolean,
-  chat?: chat[]
+  chat?: chat[],
+  unread: number
 }
 
 interface chat{
@@ -22,10 +23,12 @@ const initialState:{
   friendList: {
     [key:number]: init
   }
-  statue: 'loading' | 'succeeded' | 'failed' | ''
+  statue: 'loading' | 'succeeded' | 'failed' | '',
+  unread: number
 } = {
   friendList: {},
-  statue: ''
+  statue: '',
+  unread: 0
 }
 
 // 异步请求用户列表
@@ -71,14 +74,17 @@ const friendSlice = createSlice({
       state.statue = 'loading'
     })
     .addCase(friendList.fulfilled, (state, action) => {
+      let num = 0;
       if(state.statue!=='succeeded'){
         const result = action.payload.data.data.reduce((pre:{[key:string]:init},item:init)=>{
           item.is = false;
           item.chat = [];
           pre[item.friendId] = item;
+          num+=item.unread;
           return pre;
         },{})
         state.friendList = result
+        state.unread = num;
         state.statue = 'succeeded'
       }
     })
@@ -100,6 +106,7 @@ const friendSlice = createSlice({
 
 })
 
+export const unreadNum = (state:{friend:{unread:number}}) => state.friend.unread;
 export const friendResult = (state:{friend:{friendList:{[key:number]:init}}}) => state.friend.friendList;
 export const {addMessage} = friendSlice.actions;
 export default friendSlice.reducer

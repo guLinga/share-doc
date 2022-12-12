@@ -1,9 +1,16 @@
 import './index.scss';
 import IconFont from '../Icon/index';
-import { Link,NavLink } from 'react-router-dom';
+import { unreadNum } from '../../store/friend';
+import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 function LeftSelector() {
+
+  const unread = useSelector(unreadNum);
+  console.log(unread);
+  
+
   return (
     <div className='leftSelector'>
       <div className='fileManagement'>
@@ -15,6 +22,11 @@ function LeftSelector() {
         </NavLink>
         <NavLink to={'/friend'} className={({isActive})=>isActive?'leftNav item':'item'}>
           <IconFont type='icon-xiaoxi-copy' title="笔友" style={{"fontSize": "27px"}}/>
+          {
+            unread!==0&&<div className='num'>{
+              unread>100?'...':unread
+            }</div>
+          }
         </NavLink>
       </div>
     </div>

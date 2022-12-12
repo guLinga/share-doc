@@ -3,9 +3,9 @@ import {useSelector, useDispatch} from 'react-redux'
 import { io, Socket } from "socket.io-client";
 import jwtDecode from 'jwt-decode'
 import { userResult } from './store/user'
-import LeftSelector from './components/LeftSelector'
 import FilesManager from './pages/filesManager'
 import Dairy from './pages/dairy'
+import LeftSelector from './components/LeftSelector'//leftSelector的引入需要放到Dairy下面，否则会报错，Cannot access '__WEBPACK_DEFAULT_EXPORT__' before initialization
 import Sign from './pages/Sign'
 import './app.scss';
 import { useEffect, useRef } from 'react';

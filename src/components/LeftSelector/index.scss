@@ -1,3 +1,6 @@
+$line: 25px;
+$pad: 5px;
+
 .leftSelector{
   width: 60px !important;
   background-color: #242c48;
@@ -14,6 +17,20 @@
       width: 100%;
       height: 60px;
       line-height: 40px;
+      position: relative;
+      .num{
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: red;
+        font-size: 12px;
+        padding: $pad;
+        border-radius: 50%;
+        line-height: $line - 2 * $pad;
+        width: $line;
+        height: $line;
+      }
     }
     .leftNav{
       color: #169ef2 !important;

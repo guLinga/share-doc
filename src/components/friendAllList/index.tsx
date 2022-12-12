@@ -1,22 +1,15 @@
-import { useEffect, useContext } from 'react';
-import { friendList, friendResult } from '../../store/friend';
-import { useDispatch, useSelector } from 'react-redux';
+import { useContext } from 'react';
+import { friendResult } from '../../store/friend';
+import { useSelector } from 'react-redux';
 import { UserIdContext } from '../../pages/friends/index';
 
 function FriendAllList() {
-  const dispatch = useDispatch();
 
   // 获取好友列表
   const friend = useSelector(friendResult);
 
   // 获取Context中的好友id和set好友id
   const selectUser = useContext(UserIdContext);
-
-  // // 加载用户列表，调用store里面的异步请求加载好友列表
-  // useEffect(()=>{
-  //   //@ts-ignore
-  //   if(Object.keys(friend).length===0)dispatch(friendList());
-  // },[])
 
   return (
     <>

@@ -5,7 +5,7 @@ export const useExists = () => {
   useEffect(()=>{
     if (!fs.existsSync(dir)) {
       fs.mkdir(dir,(data:any)=>{
-        console.log(data);
+        
       })
     }
   },[])

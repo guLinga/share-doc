@@ -29,10 +29,6 @@ export default function DiaryContent({date,setDateList,dateList}:diaryContentPro
     })()
   },[date])
 
-  // useEffect(()=>{
-  //   console.log('请求数据',date,listText);
-  // }, [listText])
-
   return (
     <div className='diaryContent'>
       <DiaryContentHeader

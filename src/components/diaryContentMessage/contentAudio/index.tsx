@@ -19,8 +19,8 @@ export default function ContentAudio() {
     })()
   }
 
+  // 停止录音
   const stopAudio = () => {
-    console.log('停止录音');
     let url = audio?.stopRecord();
     //@ts-ignore
     audioRef.current.src = url

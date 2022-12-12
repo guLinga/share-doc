@@ -63,7 +63,6 @@ const myFriendQuestSlice = createSlice({
 
     builder
     .addCase(getFriendQuest.fulfilled, (state, action) => {
-      console.log('getFriendQuest',action.payload.data.data);
       const result = action.payload.data.data.reduce((pre:{[key:number]:init},item:init)=>{
         pre[item.friendId] = item;
         return pre;

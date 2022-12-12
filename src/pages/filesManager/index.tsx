@@ -127,8 +127,6 @@ function FilesManager() {
 
   //获取目录列表
   useResultDirectory((result)=>{
-    console.log('result',result);
-    
     //赋值文件列表
     setFiles(result.files);
     // localStorage.setItem('files', JSON.stringify(result));
@@ -333,7 +331,7 @@ function FilesManager() {
     //     {name: 'Markdown files', extensions: ['md']}
     //   ]
     // }).then((result:any) => {
-    //   // console.log('result',result, result.canceled, result.filePaths);
+
     //   const {canceled, filePaths}:{canceled:boolean,filePaths:string[]} = result;
     //   if(!canceled){
     //     const msg = {
@@ -382,7 +380,7 @@ function FilesManager() {
     //     })
     //   }
     // }).catch((err:any) => {
-    //   console.log('err',err);
+
     // })
   }
 

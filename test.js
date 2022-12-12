@@ -28,10 +28,9 @@ var key='1.md';
 //     throw respErr;
 //   }
 //   if (respInfo.statusCode == 200) {
-//     console.log(respBody);
+
 //   } else {
-//     console.log(respInfo.statusCode);
-//     console.log(respBody);
+
 //   }
 // });
 
@@ -40,4 +39,3 @@ var bucketManager = new qiniu.rs.BucketManager(mac, config);
 var publicBucketDomain = 'http://rl0t7sh9i.hn-bkt.clouddn.com';
 // 公开空间访问链接
 var publicDownloadUrl = bucketManager.publicDownloadUrl(publicBucketDomain, key);
-console.log(publicDownloadUrl);

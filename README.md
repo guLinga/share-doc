@@ -47,6 +47,54 @@ export interface calendarProps{
 }
 ```
 6. 笔友聊天功能。通过@reduxjs/toolkit库中的createAsyncThunk处理异步请求，来储存笔友列表，当点击不同的笔友的时候判断是否已经请求过聊天记录，如果没有则通过createAsyncThunk来处理聊天记录的异步请求，发送消息的时候先请求发送信息的接口，如果成功则通过socket.io想服务器发送消息，然后另一个好友通过socket.io接收消息，发送过socket.io后想redux的state中添加消息。
+7. 给好友聊天消息增加了未读消息条数功能，正在聊天的用户不会显示未读，主要是有一段代码我弄了半天。
+最开始我是按照下面这样写的，导致了selectUserId一直是undefined，这是因为我给useEffect限制了user，所以selectUserId的值不会更新。
+```ts
+useEffect(()=>{
+    if (socket.current&&user&&user.tokens) {
+      socket.current.on("msg-recieve", (msg:{id:number,data:{}}) => {
+        dispatch(addMessage(msg));
+        // 如果已经打开了该好友的聊天窗口那么就将未读消息清空，且不向redux中添加未读数量
+        if(msg.id===selectUserId){
+          axios({
+            url: '/friend/clearUnread',
+            method: 'PUT',
+            data: {
+              friendId: msg.id
+            }
+          })
+        }else{
+          dispatch(addUnread({friendId:msg.id}));
+        }
+      });
+    }
+  },[user])
+```
+最后我改成了下面的代码
+```ts
+useEffect(()=>{
+    if (socket.current&&user&&user.tokens) {
+      // 这里取消监听"msg-recieve"，否则会存在多个监听，发送一条信息可以收到好几条
+      socket.current.removeListener("msg-recieve");
+      socket.current.on("msg-recieve", (msg:{id:number,data:{}}) => {
+        dispatch(addMessage(msg));
+        // 如果已经打开了该好友的聊天窗口那么就将未读消息清空，且不向redux中添加未读数量
+        if(msg.id===selectUserId){
+          axios({
+            url: '/friend/clearUnread',
+            method: 'PUT',
+            data: {
+              friendId: msg.id
+            }
+          })
+        }else{
+          dispatch(addUnread({friendId:msg.id}));
+        }
+      });
+    }
+  },[user,selectUserId])
+```
+
 
 > 修改
 1. 将数组储存转换成对象存储，如果是数组的话我们每次删除修改都要查找一遍数组，如果是对象的我们可以直接获取到对象中是否有id的值。

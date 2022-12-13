@@ -39,7 +39,7 @@ function FriendAllList() {
     <>
       {
         Object.keys(friend).map((key)=>{
-          const item = friend[parseInt(key)];
+          const item = friend[key];
           return (
             <div key={item.friendId} className={
               selectUser?.selectUser?.userId===item.friendId ? 'itemVessels itemAction' : 'itemVessels'

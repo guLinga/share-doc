@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from '../utils/axios';
 
+export const KEY = "XJE";
+
 interface init{
   friendId: number,
   name: string,
@@ -21,7 +23,7 @@ interface chat{
 // 初始化用户信息
 const initialState:{
   friendList: {
-    [key:number]: init
+    [key:string]: init
   }
   statue: 'loading' | 'succeeded' | 'failed' | '',
   unread: number
@@ -61,22 +63,31 @@ const friendSlice = createSlice({
     
 
   reducers: {
+
     // 添加消息
     addMessage:(state,action) => {
-      state.friendList[action.payload.id].chat?.push(action.payload.data);
+      state.friendList[action.payload.id+KEY].chat?.push(action.payload.data);
+      const id = action.payload.id+KEY;
+      const data = state.friendList[action.payload.id+KEY];
+      delete state.friendList[action.payload.id+KEY];
+      state.friendList = {
+        [id]: data,
+        ...state.friendList
+      }
     },
     // 增加未读消息的数量
     addUnread:(state,action) => {
       state.unread++;
-      state.friendList[action.payload.friendId].unread++;
+      state.friendList[action.payload.friendId+KEY].unread++;
     },
     // 清除未读消息的数量
     clearUnread:(state,action) => {
-      state.unread -= state.friendList[action.payload.friendId].unread;
-      state.friendList[action.payload.friendId].unread = 0;
+      state.unread -= state.friendList[action.payload.friendId+KEY].unread;
+      state.friendList[action.payload.friendId+KEY].unread = 0;
     }
   },
-  // 异步请求
+
+  // 异步请求用户列表
   extraReducers(builder){
     builder
     .addCase(friendList.pending, (state, _) => {
@@ -89,7 +100,7 @@ const friendSlice = createSlice({
         const result = action.payload.data.data.reduce((pre:{[key:string]:init},item:init)=>{
           item.is = false;
           item.chat = [];
-          pre[item.friendId] = item;
+          pre[item.friendId+KEY] = item;
           num+=item.unread;
           return pre;
         },{})
@@ -103,11 +114,13 @@ const friendSlice = createSlice({
       state.statue = 'failed'
     })
 
+
+    // 聊天异步遍历
     builder
     .addCase(chatList.fulfilled, (state, action) => {
       if(action.payload.result.data.code===200){
-        state.friendList[action.payload.friendId].is = true;
-        state.friendList[action.payload.friendId].chat = action.payload.result.data.data;
+        state.friendList[action.payload.friendId+KEY].is = true;
+        state.friendList[action.payload.friendId+KEY].chat = action.payload.result.data.data;
       }
       // state.friendList = result
       state.statue = 'succeeded'
@@ -117,6 +130,6 @@ const friendSlice = createSlice({
 })
 
 export const unreadNum = (state:{friend:{unread:number}}) => state.friend.unread;
-export const friendResult = (state:{friend:{friendList:{[key:number]:init}}}) => state.friend.friendList;
+export const friendResult = (state:{friend:{friendList:{[key:string]:init}}}) => state.friend.friendList;
 export const {addMessage,addUnread,clearUnread} = friendSlice.actions;
 export default friendSlice.reducer

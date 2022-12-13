@@ -2,7 +2,7 @@ import { Resizable } from 're-resizable';
 import './index.scss';
 import FriendsListVessles from '../../components/friendsListVessels/index';
 import {props} from './type'
-import {friendResult} from '../../store/friend';
+import {friendResult, KEY} from '../../store/friend';
 import { chatList as chatLists, addMessage } from '../../store/friend';
 import { useState, createContext, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -31,7 +31,8 @@ function Friends({socket,userMessage,selectUserId}:props) {
 
   // 用户聊天列表
   const chatList = useSelector(friendResult);
-  const userChatList = selectUser?.userId ? chatList[selectUser?.userId].chat : [];
+  
+  const userChatList = selectUser?.userId ? chatList[selectUser?.userId+KEY].chat : [];
 
   // 向APP组件中传递选中的用户id
   useEffect(()=>{
@@ -42,7 +43,7 @@ function Friends({socket,userMessage,selectUserId}:props) {
 
   // 滚动条滚动到最下面
   const scroll = () => {
-    if(selectUser?.userId&&chatList[selectUser?.userId].is){
+    if(selectUser?.userId&&chatList[selectUser?.userId+KEY].is){
       const current = messagesEndRef.current!
       //scrollHeight是页面的高度
       // @ts-ignore
@@ -99,7 +100,7 @@ function Friends({socket,userMessage,selectUserId}:props) {
     // 当好友id变化时将输入框变空
     setValue('');
     // 当好友id变化时，判断是否需要异步请求聊天记录
-    if(selectUser?.userId&&!chatList[selectUser?.userId].is){
+    if(selectUser?.userId&&!chatList[selectUser?.userId+KEY].is){
       //异步请求获取聊天记录
       // @ts-ignore
       dispatch(chatLists(selectUser.userId));

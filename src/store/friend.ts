@@ -64,12 +64,6 @@ const friendSlice = createSlice({
     // 添加消息
     addMessage:(state,action) => {
       state.friendList[action.payload.id].chat?.push(action.payload.data);
-      const aim = state.friendList[action.payload.id];
-      const id = action.payload.id;
-      delete state.friendList[action.payload.id];
-      state.friendList = {
-        [id]:aim,...state.friendList
-      }
     },
     // 增加未读消息的数量
     addUnread:(state,action) => {

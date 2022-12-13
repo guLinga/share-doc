@@ -6,9 +6,10 @@ import {friendResult} from '../../store/friend';
 import { chatList as chatLists, addMessage } from '../../store/friend';
 import { useState, createContext, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {Input} from 'antd';
+import { Input, message } from 'antd';
 import { RightBtn } from './component';
 import axios from '../../utils/axios';
+import { filter } from '../../utils/filter';
 
 const { TextArea } = Input;
 
@@ -20,7 +21,7 @@ function Friends({socket,userMessage,selectUserId}:props) {
   const dispatch = useDispatch();
 
   // 输入框
-  const inputEl = useRef(null);
+  const [value,setValue] = useState('');
 
   // 滚动条滚动到最下面
   const messagesEndRef = useRef(null);
@@ -56,14 +57,15 @@ function Friends({socket,userMessage,selectUserId}:props) {
 
   // 发送消息
   const send = async () => {
-    //@ts-ignore
-    const val = inputEl.current.resizableTextArea.textArea.value;
+    
+    if(value==='')return message.error('消息不能为空');
+
     let result = await axios({
       url: '/friend/send',
       method: 'POST',
       data: {
         friendId: selectUser?.userId,
-        message: val
+        message: value
       }
     })
     
@@ -75,7 +77,7 @@ function Friends({socket,userMessage,selectUserId}:props) {
         msg: {id: userMessage?.id,data:{
           friendId: selectUser?.userId,
           userId: userMessage?.id,
-          message: val,
+          message: value,
           updateAt: '',
           id: result.data.data[0].insertId,
         }}
@@ -84,21 +86,18 @@ function Friends({socket,userMessage,selectUserId}:props) {
       dispatch(addMessage({id: selectUser?.userId,data:{
         friendId: selectUser?.userId,
         userId: userMessage?.id,
-        message: val,
+        message: value,
         updateAt: '',
         id: result.data.data[0].insertId,
       }}));
       // 发送成功后将输入框信息清空
-      // @ts-ignore
-      inputEl.current.resizableTextArea.textArea.value = '';
+      setValue('');
     }
   }
 
   useEffect(()=>{
     // 当好友id变化时将输入框变空
-    if(inputEl.current)
-    // @ts-ignore
-    inputEl.current.resizableTextArea.textArea.value = '';
+    setValue('');
     // 当好友id变化时，判断是否需要异步请求聊天记录
     if(selectUser?.userId&&!chatList[selectUser?.userId].is){
       //异步请求获取聊天记录
@@ -137,20 +136,16 @@ function Friends({socket,userMessage,selectUserId}:props) {
                           {
                             item.userId === userMessage?.id &&<>
                               <div className='messageContent'>
-                                <div>
-                                  {item.message}
-                                </div>
+                                <div dangerouslySetInnerHTML={{__html: item.message.replace(/\n/g, '<br>')}}></div>
                               </div>
                               <div className='headerName'>{userMessage.name[0]}</div>
                             </>
                           }
                           {
                             item.userId === selectUser.userId && <>
-                              <div  className='headerName'>{selectUser.name[0]}</div>
-                              <div  className='messageContent'>
-                                <div>
-                                  {item.message}
-                                </div>
+                              <div className='headerName'>{selectUser.name[0]}</div>
+                              <div className='messageContent'>
+                                <div dangerouslySetInnerHTML={{__html: item.message.replace(/\n/g, '<br/>')}}></div>
                               </div>
                             </>
                           }
@@ -159,9 +154,8 @@ function Friends({socket,userMessage,selectUserId}:props) {
                     })
                   }
                 </div>
-                {/* <div className='message white-space:pre' dangerouslySetInnerHTML={{__html: test.replace(/\n/g, '<br/>')}}></div> */}
                 <div className='send'>
-                  <TextArea ref={inputEl} style={{height:'100%'}} rows={4}/>
+                  <TextArea value={value} onChange={(e)=>{setValue(e.target.value)}} style={{height:'100%'}} rows={4}/>
                   <RightBtn type='primary' onClick={send}>发送</RightBtn>
                 </div>
               </div>

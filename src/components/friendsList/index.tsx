@@ -20,10 +20,6 @@ const items: MenuProps['items'] = [
     key: ALL
   },
   {
-    label: '未读',
-    key: NOT_READ
-  },
-  {
     label: '我的好友请求',
     key: MY_FRIEND_REQUEST
   },

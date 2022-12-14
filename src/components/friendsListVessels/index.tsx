@@ -1,12 +1,13 @@
 import './index.scss'
 import FriendSearch from '../friendSearch/index';
 import FriendsList from '../friendsList/index';
+import { props } from './type';
 
-function FriendsListVessles() {
+function FriendsListVessles({socket,userMessage}:props) {
   return (
     <div id='friendsListVessels'>
-      <FriendSearch />
-      <FriendsList />
+      <FriendSearch socket={socket} userMessage={userMessage} />
+      <FriendsList socket={socket} userMessage={userMessage} />
     </div>
   )
 }

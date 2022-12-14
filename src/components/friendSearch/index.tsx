@@ -6,6 +6,11 @@ import type { DraggableData, DraggableEvent } from 'react-draggable';
 import Draggable from 'react-draggable';
 import axios from '../../utils/axios';
 import DifferentAlert from '../../WrappedComponent/Alerts';
+import { useDispatch } from 'react-redux';
+import { addMyFriendQuest } from '../../store/my_friend_quest';
+import { getNowTime } from '../../utils/time';
+import { Socket } from 'socket.io-client';
+import { props } from './type';
 
 const SEARCH_USER_WHIT_NAME = '通过对方的用户名查询'
 
@@ -26,7 +31,9 @@ const items: MenuProps['items'] = [
 ];
 
 
-function FriendSearch() {
+function FriendSearch({socket,userMessage}:props) {
+
+  const dispatch = useDispatch();
 
   // 输入框
   const [val, setVal] = useState('');
@@ -88,7 +95,7 @@ function FriendSearch() {
   }
 
   // 添加好友
-  const addFriend = async (friendName:string) => {
+  const addFriend = async (friendName:string,friendId:number) => {
     let result = await axios({
       url: '/friend/quest',
       method: 'POST',
@@ -98,7 +105,16 @@ function FriendSearch() {
     })
     // 添加好友的处理
     if(result.data.code===200){
+      const data = {friendId,name: friendName, updateAt: getNowTime()};
       message.success(result.data.msg);
+      // 向redux中添加好友请求数据
+      dispatch(addMyFriendQuest(data));
+      // socket.io发送添加好友请求
+      socket.current?.emit("send_friend_quest",{
+        to: friendId,
+        from: userMessage?.id,
+        data: {friendId,name: userMessage?.name, updateAt: getNowTime()}
+      })
     }
   }
 
@@ -163,7 +179,7 @@ function FriendSearch() {
                   <div key={item.id} className='item'>
                     <div className='name'>{item.name}</div>
                     <Button type='default' className='btns' onClick={()=>{
-                      addFriend(item.name)
+                      addFriend(item.name,item.id)
                     }}>加好友</Button>
                   </div>
                 )

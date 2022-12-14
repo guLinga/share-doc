@@ -11,8 +11,8 @@ import './app.scss';
 import { useEffect, useRef } from 'react';
 import Friends from './pages/friends/index';
 import {useState} from 'react';
-import { addMessage, friendList, friendResult, addUnread } from './store/friend';
-import { myFriendQuest, getFriendQuest, myFriendQuestResult, getFriendQuestResult } from './store/my_friend_quest';
+import { addMessage, friendList, friendResult, addUnread, addFriend } from './store/friend';
+import { myFriendQuest, getFriendQuest, myFriendQuestResult, getFriendQuestResult, addGetFriendQuest, clearMyFriendQuest } from './store/my_friend_quest';
 import axios from 'axios';
 
 const socketUrl = process.env.NODE_ENV === 'development' ?
@@ -72,7 +72,13 @@ export default function App() {
     if (socket.current&&user&&user.tokens) {
       // 这里取消监听"msg-recieve"，否则会存在多个监听，发送一条信息可以收到好几条
       socket.current.removeListener("msg-recieve");
+      socket.current.removeListener("recivece_friend_quest");
+      socket.current.removeListener("agree_friend_quest");
+
+      // 接收发送的消息
       socket.current.on("msg-recieve", (msg:{id:number,data:{}}) => {
+        console.log(msg);
+        
         dispatch(addMessage(msg));
         // 如果已经打开了该好友的聊天窗口那么就将未读消息清空，且不向redux中添加未读数量
         if(msg.id===selectUserId){
@@ -87,6 +93,42 @@ export default function App() {
           dispatch(addUnread({friendId:msg.id}));
         }
       });
+
+      // 接收我收到的好友请求
+      socket.current.on("recivece_friend_quest", (msg:{
+        from: number
+        to: number
+        data: {
+          friendId: number
+          name: string
+          updateAt: string
+        }
+      })=>{
+        dispatch(addGetFriendQuest({
+          id: msg.from,
+          data: {
+            friendId: msg.from,
+            name: msg.data.name,
+            updateAt: msg.data.updateAt,
+            unread: 1
+          }
+        }));
+      })
+
+      // 接收同意的好友请求
+      socket.current.on("agree_friend_quest", (msg:{
+        from: number
+        to: number,
+        data: {
+          name: string
+        }
+      })=>{
+        console.log(msg);
+        // 清除自身发送的好友请求列表数据
+        dispatch(clearMyFriendQuest(msg));
+        // 增加好友
+        dispatch(addFriend({msg}));
+      })
     }
   },[user,selectUserId])
 

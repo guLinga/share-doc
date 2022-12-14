@@ -6,6 +6,8 @@ import FriendNotRead from '../friendNotRead/index';
 import MyFriendRequest from '../myFriendRequest/index';
 import GetFriendQuest from '../getFriendQuest';
 import IconFont from '../Icon/index';
+import { Socket } from 'socket.io-client';
+import { props } from './type';
 
 // 不同菜单对应的信息
 const ALL = '全部';
@@ -29,14 +31,10 @@ const items: MenuProps['items'] = [
   }
 ];
 
-function FriendsList() {
-  
-  
+function FriendsList({socket,userMessage}:props) {
 
   // 菜单key值的保存
   const [key,setKey] = useState(ALL);
-
-  
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     setKey(key);
@@ -62,7 +60,7 @@ function FriendsList() {
           key === MY_FRIEND_REQUEST && <MyFriendRequest />
         }
         {
-          key === GET_FRIEND_REQUEST && <GetFriendQuest />
+          key === GET_FRIEND_REQUEST && <GetFriendQuest socket={socket} userMessage={userMessage} />
         }
       </div>
     </div>

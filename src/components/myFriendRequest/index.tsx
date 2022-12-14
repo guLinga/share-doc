@@ -6,12 +6,14 @@ function MyFriendRequest() {
   // 获取我发送的好友请求列表
   const myQuestList = useSelector(myFriendQuestResult);
   const list = myQuestList.list;
+  console.log('list',list);
+  
 
   return (
     <>
       {
         Object.keys(list).map((idx)=>{
-          const item = list[parseInt(idx)];
+          const item = list[idx];
           return (
             <div key={item.friendId} className='itemVessels myFriendQuest'>
               <div className='name'>{item.name}</div>

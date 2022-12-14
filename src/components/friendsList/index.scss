@@ -35,6 +35,18 @@
         line-height: $height;
         color: #484b50;
         font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        .relative{
+          position: relative;
+          .point{
+            position: absolute;
+            top: 0;
+            right: -10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: red;
+          }
+        }
       }
       .time{
         position: absolute;

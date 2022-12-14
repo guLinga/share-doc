@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Input, message } from 'antd';
 import { RightBtn } from './component';
 import axios from '../../utils/axios';
-import { filter } from '../../utils/filter';
 
 const { TextArea } = Input;
 
@@ -121,7 +120,7 @@ function Friends({socket,userMessage,selectUserId}:props) {
           maxWidth="60%"
           minHeight="100%"
         >
-          <FriendsListVessles />
+          <FriendsListVessles socket={socket} userMessage={userMessage} />
         </Resizable>
         <div className='right'>
           {

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from '../utils/axios';
+import { getNowTime } from '../utils/time';
 
 export const KEY = "XJE";
 
@@ -84,6 +85,21 @@ const friendSlice = createSlice({
     clearUnread:(state,action) => {
       state.unread -= state.friendList[action.payload.friendId+KEY].unread;
       state.friendList[action.payload.friendId+KEY].unread = 0;
+    },
+    // 增加好友
+    addFriend:(state,action) => {
+      const item = action.payload.msg
+      state.friendList = {
+        [item.from+KEY] : {
+          friendId: item.from,
+          name: item.data.name,
+          updateAt: getNowTime(),
+          is: true,
+          chat: [],
+          unread: 0
+        },
+        ...state.friendList
+      }
     }
   },
 
@@ -131,5 +147,5 @@ const friendSlice = createSlice({
 
 export const unreadNum = (state:{friend:{unread:number}}) => state.friend.unread;
 export const friendResult = (state:{friend:{friendList:{[key:string]:init}}}) => state.friend.friendList;
-export const {addMessage,addUnread,clearUnread} = friendSlice.actions;
+export const {addMessage,addUnread,clearUnread,addFriend} = friendSlice.actions;
 export default friendSlice.reducer

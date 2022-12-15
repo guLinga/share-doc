@@ -2,9 +2,11 @@ import { Button } from "antd";
 import { useSelector, useDispatch } from 'react-redux';
 import { addMessage } from "../../store/friend";
 import { clearGetFriendQuest, getFriendQuestResult } from "../../store/my_friend_quest";
+import { $emit } from "../../utils/eventBus";
+import { ALL } from "../friendsList";
 import { props } from "./type";
 
-function GetFriendQuest({socket,userMessage}:props) {
+function GetFriendQuest({socket,userMessage,setKey}:props) {
 
   const dispatch = useDispatch();
 
@@ -24,28 +26,31 @@ function GetFriendQuest({socket,userMessage}:props) {
         name: userMessage?.name
       }
     })
-    setTimeout(()=>{
-      // 消息发送成功后socket向对方发送消息
-      socket.current?.emit("send-msg",{
-        to: friendId,
-        from: userMessage?.id,
-        msg: {id: userMessage?.id,data:{
-          friendId: friendId,
-          userId: userMessage?.id,
-          message: '我们已经是好友啦，一起来聊天吧！',
-          updateAt: '',
-          id: 'test'
-        }}
-      })
-      // 消息发送成功后，调用store的方法，向自身的store添加数据
-      // dispatch(addMessage({id: friendId,data:{
-      //   friendId: friendId,
-      //   userId: userMessage?.id,
-      //   message: '我们已经是好友啦，一起来聊天吧！',
-      //   updateAt: '',
-      //   id: 'test'
-      // }}));
-    },1000)
+
+    // 消息发送成功后socket向对方发送消息
+    socket.current?.emit("send-msg",{
+      to: friendId,
+      from: userMessage?.id,
+      msg: {id: userMessage?.id,data:{
+        friendId: friendId,
+        userId: userMessage?.id,
+        message: '我们已经是好友啦，一起来聊天吧！',
+        updateAt: '',
+        id: 'test'
+      }}
+    })
+    // 消息发送成功后，调用store的方法，向自身的store添加数据
+    // dispatch(addMessage({id: friendId,data:{
+    //   friendId: friendId,
+    //   userId: userMessage?.id,
+    //   message: '我们已经是好友啦，一起来聊天吧！',
+    //   updateAt: '',
+    //   id: 'test'
+    // }}));
+
+    // 切换到消息
+    setKey(ALL);
+
   }
   
   return (

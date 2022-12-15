@@ -6,4 +6,5 @@ export interface props{
     name: string;
   } | undefined
   socket:React.MutableRefObject<Socket | null>
+  setKey: React.Dispatch<React.SetStateAction<string>>
 }

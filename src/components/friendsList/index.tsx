@@ -1,16 +1,16 @@
 import './index.scss'
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import { Dropdown, MenuProps, Space } from 'antd';
 import FriendAllList from '../friendAllList/index';
 import FriendNotRead from '../friendNotRead/index';
 import MyFriendRequest from '../myFriendRequest/index';
 import GetFriendQuest from '../getFriendQuest';
 import IconFont from '../Icon/index';
-import { Socket } from 'socket.io-client';
 import { props } from './type';
+import { $off, $on } from '../../utils/eventBus';
 
 // 不同菜单对应的信息
-const ALL = '全部';
+export const ALL = '全部';
 const NOT_READ = '未读';
 const MY_FRIEND_REQUEST = '我的好友请求';
 const GET_FRIEND_REQUEST = '收到的好友请求';
@@ -40,6 +40,10 @@ function FriendsList({socket,userMessage}:props) {
     setKey(key);
   };
 
+
+  
+
+
   return (
     <div id='friendsList'>
       <Dropdown menu={{ items, onClick }}>
@@ -60,7 +64,7 @@ function FriendsList({socket,userMessage}:props) {
           key === MY_FRIEND_REQUEST && <MyFriendRequest />
         }
         {
-          key === GET_FRIEND_REQUEST && <GetFriendQuest socket={socket} userMessage={userMessage} />
+          key === GET_FRIEND_REQUEST && <GetFriendQuest socket={socket} userMessage={userMessage} setKey={setKey} />
         }
       </div>
     </div>

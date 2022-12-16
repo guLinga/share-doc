@@ -13,6 +13,11 @@ npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/"
 npm run dev
 ```
 
+> # 项目结束
+后端地址：[https://github.com/guLinga/share-node](https://github.com/guLinga/share-node)
+
+官网地址：[https://gulinga.github.io/penfriend-diary/](https://gulinga.github.io/penfriend-diary/)
+
 > # 项目功能结束
 1. 本地在线编译markdown，你可以执行对markdown文件的任意操作。例如：新增、删除、修改、编辑。
 2. 日记，你可以通过文本和语音记录自己的精彩生活，或诉说心事。
@@ -20,11 +25,13 @@ npm run dev
 
 > # 项目技术栈
 electron + react hooks + typescript + @reduxjs/toolkit + node.js Koa + mysql
-electron：用来进行应用夹克、窗口和菜单管理。
-react hooks：用来处理项目的逻辑。
-typescript：javascript的超集，用来定义类型，使项目更加的可靠。
-@reduxjs/toolkit：进行状态管理。
-node.js：使用node.js来进行本地目录的监控。
+
+- electron：用来进行应用夹克、窗口和菜单管理。
+- react hooks：用来处理项目的逻辑。
+- typescript：javascript的超集，用来定义类型，使项目更加的可靠。
+- @reduxjs/toolkit：进行状态管理。
+- node.js：使用node.js来进行本地目录的监控。
+
 
 > # 项目
 项目的文件会储存在你的c盘下的文档里面。
@@ -100,22 +107,17 @@ useEffect(()=>{
 
 > # 修改
 1. 将数组储存转换成对象存储，如果是数组的话我们每次删除修改都要查找一遍数组，如果是对象的我们可以直接获取到对象中是否有id的值。
-
 2. 使用数组的reduce将用户列表返回的数据变换成对象的类型，其中key值为id的值。
 
 > # 遇到的问题
 
 1. 当用户修改本地文件中的文件的时候该怎么办？
 我用了node来读取目录中的文件，只在第一次进入时读取，刷新页面不会重新加载，之后如果再改变目录中的文件时，我使用的时node来监听目录中文件的改变。
-
 2. 监听目录的时候，当在软件中改变文件也可以监听到，怎么办？
 我创建了一个对象来保存全部的文件名称，这样就可以判断是在本地操作的还是软件中操作的，比如修改文件，如果对象中存在修改文件的名称，那么肯定就是在本地操作的。
-
 3. 当用户第一次用该软件的时候没有`yun`目录怎么办？
 我写了一个hooks来判断是否存在`yun`目录，如果没有就创建一个，该hooks只会在进入的时候使用，刷新页面不会重新加载。
-
 4. 我的监听目录变化的hooks有点问题，我没有写监听修改的事件，因为修改就是删除一个和新增一个，但是我发现一个问题，就是当修改的时候，删除先监听到了，跟着新增也监听到了，但是删除和新增是一个hooks监听的，但是删除后新增里面没有改变原来的文件列表，就导致了刚才删除的文件再新增后又加了回来。
-
 5. 我使用@reduxjs/toolkit的时候不知道怎么在axios拦截器中获取redux中state的信息。然后我经过各种尝试，获取configureStore，然后定义变量为store，可以通过store.getState()来获取configureStore中的信息。如果你已经明白了@reduxjs/toolkit怎么用，你应该能看明白下面的代码。
 ```ts
 import store from '../store';

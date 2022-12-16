@@ -63,7 +63,7 @@ const myFriendQuestSlice = createSlice({
   reducers: {
     // 添加我发送的好友请求
     addMyFriendQuest:(state,action) => {
-      
+      state.myFriendQuestList.list[action.payload.friendId] = action.payload;
     },
     // 添加我收到的好友请求
     addGetFriendQuest:(state,action) => {

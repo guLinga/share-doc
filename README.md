@@ -147,3 +147,25 @@ obj[key]//可以使用这种方法来查找对象的值
 我们先来看下面的一张图片。
 ![](./README/object.png)
 所以，我只要将对象的key值变成字符串，并且往后面加一个非数字的字符串。
+
+> # pm2命令
+- 命名进程
+pm2 start app.js --name my-api
+- 显示所有进程状态
+pm2 list 
+- 停⽌指定的进程
+pm2 stop 0
+- 停⽌所有进程
+pm2 stop all 
+- 重启所有进程
+pm2 restart all 
+- 重启指定的进程
+pm2 restart 0
+- 杀死指定的进程
+pm2 delete 0
+- 杀死全部进程
+pm2 delete all 
+- 后台运⾏pm2，启动4个app.js，实现负载均衡
+pm2 start app.js -i 4
+- 运行script中的命令
+pm2 start  npm -- run [dev]

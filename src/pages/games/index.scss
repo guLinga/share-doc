@@ -1,0 +1,35 @@
+#games{
+  flex: 1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .item{
+    flex: 4;
+    height: 90px;
+    min-width: 25%;
+    .itemVessels{
+      display: block;
+      text-decoration: none;
+      color: black;
+      width: 70px;
+      height: 100%;
+      border: 1px solid black;
+      margin: 0 auto;
+      cursor: pointer;
+      .icon{
+        height: 70px;
+        text-align: center;
+        line-height: 70px;
+        font-size: 30px;
+      }
+      .name{
+        height: 20px;
+        font-size: 12px;
+        text-align: center;
+        line-height: 20px;
+      }
+    }
+  }
+}

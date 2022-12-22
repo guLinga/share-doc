@@ -31,6 +31,9 @@ function LeftSelector() {
             }</div>
           }
         </NavLink>
+        <NavLink to={'/games'} className={({isActive})=>isActive?'leftNav item':'item'}>
+          <IconFont type='icon-youxi-copy' title="游戏"/>
+        </NavLink>
       </div>
     </div>
   )

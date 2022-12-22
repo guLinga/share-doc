@@ -62,7 +62,7 @@
   "homepage": "./",
   "build": {
     "appId": "cloudDoc",
-    "productName": "云文档",
+    "productName": "Penfriend-Diary-v1.0",
     "copyright": "Copyright 2022 1514",
     "extends": null,
     "directories": {

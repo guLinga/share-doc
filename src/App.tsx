@@ -14,6 +14,8 @@ import {useState} from 'react';
 import { addMessage, friendList, friendResult, addUnread, addFriend } from './store/friend';
 import { myFriendQuest, getFriendQuest, myFriendQuestResult, getFriendQuestResult, addGetFriendQuest, clearMyFriendQuest } from './store/my_friend_quest';
 import axios from 'axios';
+import Games from './pages/games';
+import GamesContainer from './components/gamesContainer/index';
 
 const socketUrl = process.env.NODE_ENV === 'development' ?
 'http://localhost:8000' : 'http://150.158.95.113:8000'
@@ -149,6 +151,8 @@ export default function App() {
               <Route element={ <Friends socket={socket} userMessage={userMessage} selectUserId={(id)=>{
                 setSelectUserId(id)
               }} /> } path="/friend" />
+              <Route element={ <Games/> } path="/games" />
+              <Route element={ <GamesContainer/> } path="/games/container/:g" />
               <Route path='/' element={<Navigate to="/index"/>} />
             </Routes>
           </div>

@@ -1,0 +1,15 @@
+#GamesContainer{
+  flex: 1;
+  position: relative;
+  .close{
+    display: block;
+    text-decoration: none;
+    color: black;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    font-size: 30px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+}

@@ -35,7 +35,7 @@ export default function DiaryContent({date,setDateList,dateList}:diaryContentPro
         listText={listText}
         setListText={setListText}
       />
-      <div>
+      <div className='typeContent'>
         {
           listText === '日记'&&
           <ContentDiary content={content} date={date} setDateList={setDateList} dateList={dateList}/>

@@ -142,8 +142,8 @@ export default function App() {
       }
       {
         !(!user || !user.tokens) ?
-        <div className="App container-fluid">
-          <div className='row view-flex'>
+        <div className="App">
+          <div className='view-flex'>
             <LeftSelector />
             <Routes>
               <Route element={ <FilesManager/> } path="/filesManager" />

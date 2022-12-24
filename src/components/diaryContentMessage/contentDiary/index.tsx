@@ -52,6 +52,7 @@ export default function ContentDiary({content,date,setDateList,dateList}:props) 
         renderHTML={text => mdParser.render(text)}
         onChange={(e)=>{handleEditorChange(e)}}
         view={{ menu: true, md: true, html: false }}
+        style={{height:'100%'}}
       />
       <div className='save' title='保存' onClick={saveArticle}>
         <IconFont type='icon-baocun'/>

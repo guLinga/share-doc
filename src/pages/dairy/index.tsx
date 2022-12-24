@@ -26,7 +26,7 @@ export default function Test() {
           setDate(day);
         }}/>
       </div>
-      <div>
+      <div className='diaryContents'>
           <DiaryContent date={date} setDateList={setDateList} dateList={dateList} />
       </div>
     </div>

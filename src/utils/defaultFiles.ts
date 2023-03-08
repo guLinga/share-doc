@@ -1,4 +1,5 @@
 const Store = window.require('electron-store');
+// 测试数据
 export const fileStore = {
   "945c7629-749c-4ea7-8fb3-398a058355b2":{"id":"945c7629-749c-4ea7-8fb3-398a058355b2","path":"C:\\Users\\DELL\\Documents\\111.md","title":"111"},
   "d1b57547-76c4-49ec-ac35-acadb5859653":{"id":"d1b57547-76c4-49ec-ac35-acadb5859653","path":"C:\\Users\\DELL\\Desktop\\testmd\\222.md","title":"222"},

@@ -1,0 +1,67 @@
+.recordAudioVessels{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: .7);
+  .recordAudio{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 300px;
+    height: 350px;
+    background-color: white;
+    border-radius: 5px;
+    $audioColor: #0d6efd;
+    $audioWidth: calc(100% - 50px);
+    .audioFrame{
+      width: $audioWidth;
+      margin: 0 auto;
+      margin-top: 60px;
+      height: 60px;
+      background-color: $audioColor;
+      border-radius: 10px;
+      position: relative;
+      $triangle: 10px;
+      padding: 0 40px;
+      &::after{
+        content: "";
+        position: absolute;
+        bottom: -$triangle + 1;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        border-top: $triangle solid $audioColor;
+        border-left: $triangle solid transparent;
+        border-right: $triangle solid transparent;
+      }
+      .audioCanvas{
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        text-align: center;
+        line-height: 60px;
+        font-size: 600;
+        color: white;
+      }
+    }
+    .microphone{
+      width: 100%;
+      font-size: 50px;
+      text-align: center;
+    }
+    .selector{
+      width: $audioWidth;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      div{
+        cursor: pointer;
+        font-size: 20px;
+      }
+    }
+  }
+}

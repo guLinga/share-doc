@@ -1,0 +1,51 @@
+.row{
+  display: flex;
+  background-color: #9ead86;
+  width: 210px;
+  .col{
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    border: 2px solid #879372;
+    margin: 0 2px 2px 0;
+    box-sizing: border-box;
+    &::after{
+      content: "";
+      display: block;
+      width: 12px;
+      height: 12px;
+      background: #879372;
+      overflow: hidden;
+    }
+  }
+  .remove{
+    border: 2px solid #000;
+    &::after{
+      background: #000;
+    }
+  }
+  .fixed{
+    border: 2px solid #000;
+    &::after{
+      background: #000;
+    }
+  }
+  .arrive{
+    border: 2px solid rgb(112, 112, 112);
+    &::after{
+      background: rgb(112, 112, 112);
+    }
+  }
+}
+
+.shack{
+  animation: shake 800ms infinite;
+}
+
+@keyframes shake { /* 水平抖动，核心代码 */
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(+2px, 0, 0); }
+  30%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(+4px, 0, 0); }
+  50% { transform: translate3d(-4px, 0, 0); }
+}
